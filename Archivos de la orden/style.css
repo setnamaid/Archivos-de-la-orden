@@ -1,0 +1,550 @@
+/* ════════════════════════════════════════════
+   ARCHIVO DE LA ORDEN — style.css
+   ════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    background: #0b0b0b;
+    color: #c6a75d;
+    font-family: 'Cinzel', serif;
+    margin: 0;
+    line-height: 1.7;
+    overflow-x: hidden;
+}
+
+/* ── COLA FANTASMA ─────────────────────────── */
+#cola-fantasma {
+    display: none;
+    position: fixed;
+    width: 180px;
+    z-index: 99998;
+    pointer-events: none;
+    transition: opacity 1.2s ease;
+    filter: invert(1) brightness(0.4);
+}
+
+/* ── INTRO ─────────────────────────────────── */
+#intro-overlay {
+    position: fixed;
+    inset: 0;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 2s;
+    z-index: 9999;
+    flex-direction: column;
+}
+#intro-gif {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+}
+#intro-texto {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    font-family: monospace;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    color: #9aa887;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+#intro-texto p {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.8s, transform 0.8s;
+    margin: 0;
+}
+#intro-texto p.visible { opacity: 1; transform: translateY(0); }
+.intro-alerta { color: #cc3333 !important; font-weight: bold; animation: parpadeo-error 1s infinite; }
+
+/* ── CONTENIDO PRINCIPAL ───────────────────── */
+#main-content {
+    opacity: 0;
+    transition: opacity 2s;
+    padding: 40px 20px;
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+/* ── HEADER ────────────────────────────────── */
+.header-completo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+.logo-titulo { width: 140px; }
+
+.titulo-glitch {
+    font-family: 'Cinzel Decorative', serif;
+    text-shadow: 0 0 5px rgba(198,167,93,.4), 0 0 15px rgba(198,167,93,.2);
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    animation: glitch-titulo 8s infinite;
+}
+.titulo-glitch::before, .titulo-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    opacity: 0;
+}
+.titulo-glitch::before { color: #ff4444; clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%); animation: glitch-capa1 8s infinite; }
+.titulo-glitch::after  { color: #4af6ff; clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%); animation: glitch-capa2 8s infinite; }
+@keyframes glitch-titulo { 0%,90%,100% { transform: translate(0); } 91% { transform: translate(-1px,1px); } 92% { transform: translate(1px,-1px); } 93% { transform: translate(0); } }
+@keyframes glitch-capa1 { 0%,90%,100% { opacity:0; } 91% { opacity:0.8; transform: translate(-2px,0); } 92% { opacity:0; } }
+@keyframes glitch-capa2 { 0%,91%,100% { opacity:0; } 92% { opacity:0.7; transform: translate(2px,0); } 93% { opacity:0; } }
+.subtitulo { letter-spacing: 3px; }
+
+/* ── ESTADO DEL SISTEMA ────────────────────── */
+.estado-sistema {
+    max-width: 900px;
+    margin: 0 auto 30px;
+    padding: 20px 24px;
+    border: 1px solid #333;
+    background: #0e0e0e;
+    font-family: monospace;
+    color: #9aa887;
+    font-size: 0.9rem;
+}
+.estado-sistema p { margin: 6px 0; }
+.contador-ok       { color: #4af626; font-weight: bold; }
+.contador-perdido  { color: #c6a75d; font-weight: bold; }
+.contador-anomalia { color: #cc3333; font-weight: bold; }
+.sistema-aviso { color: #444; font-size: 0.75rem; margin-top: 12px !important; border-top: 1px solid #1e1e1e; padding-top: 8px; }
+
+/* ── TARJETAS DE ARCHIVO ───────────────────── */
+.archivo {
+    max-width: 900px;
+    margin: 14px auto;
+    padding: 18px 24px;
+    background: #111;
+    border-left: 3px solid #c6a75d;
+    cursor: pointer;
+    transition: box-shadow 0.3s, transform 0.2s;
+}
+.archivo:hover { box-shadow: 0 0 18px rgba(198,167,93,.1); transform: translateX(2px); }
+.archivo h2 { margin: 4px 0 8px; font-size: 1rem; letter-spacing: 1px; }
+.archivo p  { margin: 5px 0; font-size: 0.91rem; }
+
+.archivo-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+.archivo-header h2 { margin: 0; flex: 1; }
+
+/* ── LORE EXPANDIBLE ───────────────────────── */
+.lore-toggle {
+    font-family: monospace;
+    font-size: 0.72rem;
+    color: #555;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    transition: color 0.2s;
+}
+.archivo:hover .lore-toggle { color: #888; }
+
+.lore-expandible {
+    display: none;
+    margin-top: 14px;
+    padding: 14px 16px;
+    border: 1px solid #1e1e1e;
+    background: #0c0c0c;
+    border-left: 2px solid #333;
+    animation: abrir-lore 0.3s ease;
+}
+.lore-expandible.abierto { display: block; }
+
+@keyframes abrir-lore {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.lore-titulo {
+    font-family: monospace;
+    font-size: 0.72rem;
+    color: #444;
+    letter-spacing: 2px;
+    margin: 0 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #1a1a1a;
+}
+.lore-expandible p { font-size: 0.87rem; color: #8a7a6a; margin: 6px 0; }
+.lore-expandible em { color: #c6a75d; }
+
+.lore-relacion {
+    margin-top: 12px !important;
+    padding: 10px 12px;
+    background: rgba(198,167,93,0.04);
+    border-left: 2px solid #3a2a10;
+    font-size: 0.84rem !important;
+    color: #7a6a4a !important;
+    font-style: italic;
+}
+
+/* ── ESTADOS ───────────────────────────────── */
+.estado        { font-family: monospace; color: #9aa887; font-size: 0.8rem; }
+.alerta        { color: #aa3333; }
+.bloqueado     { color: #555; letter-spacing: 2px; }
+.ausente       { color: #444; }
+
+/* ── ENLACE LA ESTRELLA (en Justicia) ─────── */
+.enlace-estrella {
+    color: #c6a75d;
+    text-decoration: underline;
+    text-decoration-color: #553322;
+    cursor: pointer;
+    font-style: italic;
+    transition: color 0.2s, text-shadow 0.2s;
+    animation: pulso-estrella 2.5s infinite;
+}
+.enlace-estrella:hover {
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255,220,100,0.5);
+}
+@keyframes pulso-estrella {
+    0%,100% { opacity:1; }
+    50%      { opacity:0.65; }
+}
+
+/* ── INTERACTIVO (Justicia) ─────────────────── */
+.archivo.interactivo { border-left-color: #553322; }
+.archivo.interactivo:hover { border-left-color: #884422; background: rgba(212,175,55,.03); }
+.pista-click {
+    font-family: monospace;
+    font-size: 0.72rem;
+    color: #4af626;
+    letter-spacing: 1px;
+    opacity: 0.7;
+}
+
+/* ── LA ESTRELLA ───────────────────────────── */
+.archivo.estrella { border-left-color: #553333; background: #110d0d; }
+.estrella-fragmento { margin: 14px 0; padding: 12px 16px; border: 1px dashed #2a1010; background: rgba(80,0,0,.08); }
+.corrupto      { font-family: monospace; color: #553333; font-size: 0.8rem; letter-spacing: 1px; }
+.texto-invertido { color: #5a1a1a; font-weight: bold; text-shadow: 0 0 8px rgba(180,0,0,.4); }
+.estrella-nota { color: #7a4444; font-size: 0.84rem; font-style: italic; }
+.secreto-seleccionable {
+    color: transparent; font-size: 0.9rem; font-style: italic;
+    margin-top: 16px; user-select: text;
+}
+.secreto-seleccionable::selection    { background: #ff3838; color: #000; }
+.secreto-seleccionable::-moz-selection { background: #ff3838; color: #000; }
+.estrella-conexion { margin-top: 12px; }
+.tag-conexion {
+    font-family: monospace; font-size: 0.72rem;
+    color: #553333; border: 1px solid #2a1010; padding: 3px 8px;
+}
+
+/* ── XXII AUSENTE ──────────────────────────── */
+.archivo-ausente { border-left-color: #1e1e1e; background: #0d0d0d; opacity: 0.55; cursor: default; }
+.archivo-ausente:hover { transform: none; box-shadow: none; }
+.texto-ausente { color: #2a2a2a; }
+.nota-sistema { font-family: monospace; font-size: 0.73rem; color: #303030; margin: 3px 0; }
+
+/* ── LA SINGULARIDAD ────────────────────────── */
+.archivo.singularidad {
+    border-left: 3px solid #1e1e1e;
+    background: #090909;
+    position: relative;
+    overflow: hidden;
+}
+.archivo.singularidad::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.12) 2px, rgba(0,0,0,.12) 4px);
+    pointer-events: none;
+    animation: scanlines 8s linear infinite;
+    opacity: 0.5;
+}
+@keyframes scanlines { 0% { background-position:0 0; } 100% { background-position:0 100px; } }
+.archivo.singularidad:hover { border-left-color: #442222; background: #0e0606; }
+.sing-header { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+.sing-numero { font-family: monospace; font-size: 0.75rem; color: #333; letter-spacing: 3px; }
+.sing-titulo { font-size: 1.1rem; letter-spacing: 4px; color: #333; margin: 4px 0 12px; font-family: monospace; }
+.sing-clasificacion { font-family: monospace; font-size: 0.76rem; color: #442222; letter-spacing: 1px; margin-bottom: 14px; }
+.sing-datos { background: rgba(8,0,0,.6); border: 1px solid #1a1a1a; padding: 12px 16px; font-family: monospace; font-size: 0.8rem; color: #444; margin-bottom: 12px; }
+.sing-datos p { margin: 4px 0; }
+.contador-fallo { color: #883333; font-weight: bold; }
+.cero-rojo      { color: #662222; }
+.sing-descripcion-censurada { padding: 8px 0; font-size: 0.86rem; color: #3a3a3a; font-family: monospace; letter-spacing: 1px; }
+.sing-descripcion-censurada p { margin: 5px 0; }
+.texto-imposible { color: #774422; font-weight: bold; animation: pulso-imposible 3s infinite; }
+@keyframes pulso-imposible { 0%,100% { opacity:1; } 50% { opacity:0.35; } }
+.sing-pista { font-family: monospace; font-size: 0.73rem; color: #332222; margin-top: 14px; letter-spacing: 1px; animation: parpadeo-error 3.5s infinite; }
+
+/* ── MODALES BASE ──────────────────────────── */
+.modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.97);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: #030303;
+    border: 2px solid #ff3838;
+    padding: 28px;
+    max-width: 620px;
+    width: 90%;
+    max-height: 88vh;
+    overflow-y: auto;
+    font-family: monospace;
+    color: #e5c158;
+    animation: temblor-pantalla 0.15s linear infinite alternate;
+}
+.close-button {
+    float: right; color: #ff3838; cursor: pointer;
+    font-weight: bold; border: 1px solid #ff3838;
+    padding: 4px 10px; font-size: 0.73rem; font-family: monospace;
+}
+.close-button:hover { background: #ff3838; color: #000; }
+
+/* ── MODAL JUSTICIA ─────────────────────────── */
+.alerta-glitch { color: #ff3838; font-weight: bold; font-size: 0.84rem; letter-spacing: 1px; }
+.puzzle-box { border: 1px dashed rgba(212,175,55,.2); padding: 14px; margin: 18px 0; background: rgba(10,10,10,.9); }
+.texto-extraño { font-size: 1rem; letter-spacing: 2px; }
+.pista-acertijo { font-size: 0.76rem; opacity: 0.4; font-style: italic; }
+.anomalia-container { margin-top: 22px; border: 1px solid rgba(255,56,56,.3); background: rgba(15,0,0,.5); padding: 14px; text-align: center; }
+.tag-rojo { color: #fff; background: #ff3838; padding: 2px 6px; font-size: 0.7rem; font-weight: bold; display: inline-block; margin-bottom: 10px; animation: parpadeo-tag 0.4s infinite; }
+.glitch-img { width: 100%; max-height: 220px; object-fit: cover; filter: grayscale(1) contrast(1.8) brightness(0.9); animation: glitch-fotografico 1.5s infinite alternate; }
+.error-sistema-mensaje { color: #ff3838; font-family: monospace; font-size: 0.8rem; font-style: italic; border-left: 2px solid #ff3838; padding-left: 10px; margin-top: 12px; animation: parpadeo-error 2s infinite; }
+
+/* ── MODAL SINGULARIDAD ─────────────────────── */
+.modal-singularidad .modal-content { border-color: #221010; animation: temblor-pesado 0.2s linear infinite alternate; }
+.modal-content-sing { max-width: 660px; }
+.close-sing { border-color: #332222; color: #443333; }
+.close-sing:hover { background: #1a0808; color: #884444; }
+.sing-modal-header { text-align: center; margin: 20px 0 26px; padding-bottom: 18px; border-bottom: 1px solid #1a1a1a; }
+.sing-modal-num { font-family: monospace; font-size: 0.73rem; color: #333; letter-spacing: 4px; margin: 0 0 6px; }
+.sing-modal-nombre { font-family: 'Cinzel Decorative', serif; font-size: 1.4rem; color: #774422; margin: 0 0 6px; letter-spacing: 3px; }
+.sing-modal-sub { font-family: monospace; font-size: 0.7rem; color: #332222; letter-spacing: 1px; margin: 0; }
+.sing-modal-cuerpo { display: flex; flex-direction: column; gap: 18px; }
+.sing-bloque { padding: 14px; border: 1px solid #161616; background: #050505; }
+.sing-bloque-alerta { border-color: #221010; background: rgba(30,0,0,.4); }
+.sing-bloque-final { border-color: #2a1010; background: #060202; text-align: center; padding: 22px; }
+.sing-etiqueta { font-family: monospace; font-size: 0.7rem; color: #444; letter-spacing: 2px; margin: 0 0 10px; padding-bottom: 5px; border-bottom: 1px solid #161616; }
+.sing-etiqueta.rojo { color: #553333; }
+.sing-bloque p { margin: 5px 0; font-size: 0.86rem; color: #8a6a4a; }
+.sing-bloque em { color: #c6a75d; }
+.sing-bloque strong { color: #bb4422; }
+.sing-lista { margin: 8px 0; padding-left: 18px; font-size: 0.86rem; color: #6a5a4a; }
+.sing-lista li { margin: 5px 0; }
+.sing-nota-tecnica { font-family: monospace; font-size: 0.72rem; color: #331a1a; margin-top: 8px !important; }
+.texto-imposible-grande { font-family: 'Cinzel', serif; font-size: 0.9rem; color: #662211; letter-spacing: 2px; margin: 8px 0; animation: pulso-imposible 3s infinite; }
+
+/* ── MINIJUEGO ─────────────────────────────── */
+.modal-juego { background: rgba(0,0,0,0.99); }
+
+.juego-container {
+    background: #050505;
+    border: 1px solid #1a1a1a;
+    padding: 0;
+    width: 640px;
+    max-width: 96vw;
+    max-height: 92vh;
+    overflow-y: auto;
+    font-family: monospace;
+}
+
+.juego-pantalla {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 28px;
+    gap: 14px;
+    min-height: 300px;
+}
+
+.juego-clasificado { font-size: 0.7rem; color: #333; letter-spacing: 3px; margin: 0; }
+
+#juego-estrella-logo {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    filter: brightness(0.7);
+    animation: pulso-estrella 2s infinite;
+}
+
+.juego-titulo { font-family: 'Cinzel Decorative', serif; color: #c6a75d; font-size: 1.2rem; margin: 0; letter-spacing: 2px; }
+.juego-subtitulo { color: #554433; font-size: 0.8rem; margin: 0; }
+.juego-instrucciones { color: #6a5a4a; font-size: 0.82rem; text-align: center; line-height: 1.7; margin: 0; }
+.juego-instrucciones strong { color: #c6a75d; }
+
+.juego-btn {
+    background: transparent;
+    border: 1px solid #333;
+    color: #c6a75d;
+    font-family: 'Cinzel', serif;
+    font-size: 0.82rem;
+    padding: 8px 22px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: background 0.2s, border-color 0.2s;
+}
+.juego-btn:hover { background: rgba(198,167,93,.08); border-color: #c6a75d; }
+.juego-btn-cerrar { border-color: #221111; color: #443333; font-size: 0.75rem; }
+.juego-btn-cerrar:hover { background: rgba(80,0,0,.1); border-color: #553333; color: #884444; }
+
+.juego-hud {
+    width: 600px;
+    max-width: 96vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 4px;
+    font-size: 0.78rem;
+    color: #665544;
+    gap: 12px;
+}
+#juego-barra-container {
+    flex: 1;
+    height: 4px;
+    background: #1a1a1a;
+    border-radius: 2px;
+    overflow: hidden;
+}
+#juego-barra {
+    height: 100%;
+    background: #c6a75d;
+    width: 0%;
+    transition: width 0.3s;
+    border-radius: 2px;
+}
+
+#juego-canvas {
+    display: block;
+    border: 1px solid #1a1a1a;
+    outline: none;
+}
+
+.juego-resultado-texto { color: #8a6a4a; font-size: 0.88rem; text-align: center; margin: 0; }
+
+.juego-revelacion-label { font-size: 0.7rem; color: #443322; letter-spacing: 2px; margin: 0 0 10px; }
+
+#juego-revelacion-img {
+    width: 100%;
+    max-width: 400px;
+    max-height: 260px;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+}
+
+#revelacion-container {
+    flex-direction: column;
+    align-items: center;
+    margin: 8px 0;
+    border: 1px solid #221010;
+    padding: 16px;
+    background: #030000;
+    width: 100%;
+    max-width: 440px;
+}
+
+/* ── ANIMACIONES ─────────────────────────────── */
+@keyframes temblor-pantalla { 0% { transform:translate(0) skew(0deg); } 100% { transform:translate(1px,-0.5px) skew(0.2deg); } }
+@keyframes temblor-pesado   { 0% { transform:translate(0,0) skew(0deg); } 100% { transform:translate(0.5px,-1px) skew(0.3deg); } }
+@keyframes parpadeo-tag     { 0%,100% { opacity:1; } 50% { opacity:0.2; } }
+@keyframes parpadeo-error   { 0%,100% { opacity:0.8; } 50% { opacity:0.35; } }
+@keyframes glitch-fotografico {
+    0%,93%,100% { filter:grayscale(1) contrast(1.8) brightness(1); transform:scale(1); }
+    94% { filter:grayscale(0) contrast(3) invert(1) brightness(1.5); transform:scaleX(1.06) skewX(4deg); }
+    96% { filter:grayscale(1) contrast(1) brightness(0.4); transform:scaleY(0.95); }
+    98% { filter:grayscale(1) contrast(2) brightness(1.2); }
+}
+
+/* ── RESPONSIVE ──────────────────────────────── */
+@media (max-width: 600px) {
+    #main-content { padding: 20px 12px; }
+    .header-completo { flex-direction: column; gap: 14px; text-align: center; }
+    .logo-titulo { width: 90px; }
+    .titulo-glitch { font-size: 1rem; }
+    .juego-container { width: 100vw; }
+    #juego-canvas { width: 100%; height: auto; }
+    .juego-hud { width: 100%; }
+}
+
+/* ── JUEGO FONDO ─────────────────────────────── */
+#juego-fondo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: 0;
+}
+#juego-canvas {
+    position: relative;
+    z-index: 1;
+    display: block;
+    border: 1px solid #1a1a1a;
+    background: transparent;
+}
+
+/* ── MODAL CIERVO OBSERVANDO ─────────────────── */
+.modal-ciervo {
+    background: rgba(0,0,0,0.98);
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.ciervo-contenido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    animation: acercar-ciervo 4s ease-in forwards;
+}
+.ciervo-contenido img {
+    width: 300px;
+    max-width: 80vw;
+    filter: saturate(0.5) brightness(0.8);
+}
+.ciervo-texto {
+    font-family: 'Cinzel', serif;
+    color: #553333;
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    animation: parpadeo-error 1.5s infinite;
+}
+@keyframes acercar-ciervo {
+    from { transform: scale(0.6); opacity: 0.3; }
+    to   { transform: scale(1.1); opacity: 1; }
+}
+
+/* ── SINGULARIDAD BLOQUEADA ──────────────────── */
+.sing-lock-label {
+    font-family: monospace;
+    font-size: 0.72rem;
+    color: #443333;
+    letter-spacing: 1px;
+    margin-left: auto;
+    transition: color 0.3s;
+}
+
+/* ── REVELACIÓN (victoria) ───────────────────── */
+#juego-revelacion-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transform-origin: center center;
+}

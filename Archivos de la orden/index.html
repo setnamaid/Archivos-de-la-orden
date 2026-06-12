@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archivo de la Orden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- AUDIOS -->
+<audio id="audio-glacier" src="GLACEIR.mp3" loop></audio>
+<audio id="audio-static"  src="Static_Sound_Effect__Intro_.mp3"></audio>
+<audio id="audio-inner"   src="Inner_Channel_Zone.mp3" loop></audio>
+
+<!-- COLA FANTASMA — ahora cliqueable -->
+<img src="cola-ciervo.png" id="cola-fantasma" alt="" onclick="colaClick()">
+
+<!-- INTRO OVERLAY -->
+<div id="intro-overlay">
+    <img src="cosmos-effect.gif" id="intro-gif" alt="">
+    <div id="intro-texto">
+        <p id="intro-linea1">INICIALIZANDO ARCHIVO DE LA ORDEN...</p>
+        <p id="intro-linea2">RESTAURANDO REGISTROS ASTRALES...</p>
+        <p id="intro-linea3" class="intro-alerta">⚠ ANOMALÍA DETECTADA EN SECTOR XXIII ⚠</p>
+    </div>
+</div>
+
+<div id="main-content">
+
+<header class="header-completo">
+    <div class="logo-container">
+        <img src="La orden.png" class="logo-titulo" alt="Sello de la Orden">
+    </div>
+    <div>
+        <h1 class="titulo-glitch" data-text="ARCHIVO DE LA ORDEN">ARCHIVO DE LA ORDEN</h1>
+        <p class="subtitulo">REGISTROS ASTRALES RECUPERADOS</p>
+    </div>
+</header>
+
+<section class="estado-sistema">
+    <p>ARCANOS OPERATIVOS: <span class="contador-ok" data-target="21">0</span></p>
+    <p>ARCANOS PERDIDOS: <span class="contador-perdido" data-target="1">0</span></p>
+    <p>ANOMALÍAS REGISTRADAS: <span class="contador-anomalia" data-target="1">0</span></p>
+    <p class="sistema-aviso">// ADVERTENCIA: EL CONTEO TOTAL DE ARCANOS NO COINCIDE CON LOS PARÁMETROS ESTÁNDAR //</p>
+</section>
+
+<!-- ARCANOS -->
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>0. EL LOCO</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Viajero errante sin rumbo fijo. Sus hilos mágicos fluctúan, pero permanecen estables.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>El Loco fue el primero en reportar la presencia de una anomalía en los territorios del este. Nunca dejó de hablar de <em>la sombra con forma de ciervo</em> que lo seguía desde los límites del mapa conocido.</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: Fue el último arcano en ver a La Estrella con vida. Reportó que ella "miraba hacia algo que no estaba ahí". Nadie le creyó.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>I. EL MAGO</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Un arcanista primigenio, conocedor y resplandeciente.</p>
+    <p><i>(El resto del archivo se encuentra dañado.)</i></p>
+    <p>Nadie habla sobre lo que el Mago debió ver.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO PARCIAL — ARCHIVO DAÑADO //</p>
+        <p>Los fragmentos recuperados mencionan "una presencia que devora la causalidad" y "un ser que existe en el espacio entre las consecuencias".</p>
+        <p class="corrupto">██████ EL RESTO FUE DESTRUIDO ██████</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: El Mago entrenó personalmente a La Estrella. No le enseñó cómo sobrevivir a algo que no debería existir.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>II. LA SACERDOTISA</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Custodia de los pergaminos sagrados. Reporta un silencio inusual en las frecuencias astrales.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>Tres semanas antes de la erradicación, La Estrella dejó de aparecer en los registros de frecuencia. Como si ya estuviera siendo borrada antes de serlo.</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: La última entrada de su diario dice solo: "Esta noche no vino. La frecuencia donde ella existía está vacía."</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>III. LA EMPERATRIZ</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Canalizadora de la energía vital de los reinos. Sus reservas mágicas operan al 100%.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>Las plantas en los territorios del este dejaron de orientarse hacia la luz de La Estrella. Las raíces crecían hacia abajo con más fuerza, como huyendo de algo en la superficie.</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: "La única fuente de esperanza que no requería ser cultivada." Después de la erradicación, los campos del este no volvieron a florecer.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>IV. EL EMPERADOR</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Protector de las fronteras físicas de la Orden. No se reportan fisuras en los muros tácticos.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>La Singularidad no atravesó los muros. Simplemente existió dentro de ellos. Envió tres batallones a proteger a La Estrella. Llegaron. La Estrella ya no estaba.</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: No encontraron rastro de combate, no encontraron cuerpo. Solo el lugar donde algo había dejado de existir.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>V. EL JERARCA</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Intérprete de las señales celestes. Mantiene el orden teológico entre los aprendices.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>Concluyó que el XXIII era una herejía ontológica: algo que no debería tener la capacidad de existir, pero que lo hace de todas formas.</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: Fue quien declaró la "erradicación" como categoría de evento. Antes no existía esa palabra. Tuvo que crearla.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>VI. LOS ENAMORADOS</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Nexo dual de energía complementaria. La resonancia magnética entre ambos es constante.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>Por tres días su resonancia falló. No podían encontrarse el uno al otro. Como si el evento hubiera contaminado la idea misma de conexión.</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: "La Estrella era el ancla." Sin ella, todos los lazos de la Orden se volvieron levemente inestables.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>VII. EL CARRO</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Vanguardia militar de la Orden. Unidades listas para movilización externa.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>Sus unidades reportaron huellas de ciervo que aparecían y desaparecían sin lógica, y el silencio — siempre el silencio.</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: "Ella insistió en quedarse hasta que todos evacuaran. No supe cómo decirle que eso la pondría sola al final."</p>
+    </div>
+</div>
+
+<!-- VIII. LA JUSTICIA -->
+<div class="archivo interactivo" onclick="abrirDocumento()">
+    <div class="archivo-header">
+        <span class="estado">[✔]</span>
+        <h2>VIII. LA JUSTICIA</h2>
+        <span class="pista-click">📂 SEÑAL DETECTADA — PRESIONA PARA INVESTIGAR</span>
+    </div>
+    <p>La Justicia ha presentado sus encargos de forma debida.</p>
+    <p>Sus presagios sobre la destrucción total del todo jamás fueron tomados con seriedad.</p>
+    <p>Desde que <span class="enlace-estrella" onclick="event.stopPropagation(); registrarClickEstrella()">La Estrella</span> dejó de existir, las balanzas no han vuelto a equilibrarse.</p>
+    <p class="error-sistema-mensaje">[!] HA OCURRIDO UN ERROR INESPERADO AL TRATAR DE RESTAURAR EL ARCHIVO</p>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>IX. EL ERMITAÑO</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Aislado en los picos helados. Cortó comunicaciones voluntariamente, pero sus signos vitales siguen activos.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>Se cree que La Estrella le dio un fragmento de su luz para que pudiera encontrar el camino de regreso si algún día quería volver.</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: Desde la erradicación, múltiples exploradores reportan la linterna del Ermitaño apagada por primera vez. No ha respondido comunicaciones.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>X. LA RUEDA DE LA FORTUNA</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Monitoreo del ciclo del destino. Los engranajes giran al ritmo estándar predecible.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>Nunca había registrado una "erradicación". Sus engranajes intentaron procesar el evento tres veces. En las tres: <span class="corrupto">EVENTO SIN CLASIFICACIÓN TEMPORAL</span>.</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: El último registro de La Estrella termina de forma abrupta, en mitad de una secuencia. Como si alguien hubiera cortado el hilo.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>XI. LA FUERZA</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Control de las bestias místicas de los sectores bajos. Domadora asignada reporta calma.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>"Intenté calmarla como calmo a las bestias — busqué algo con lo que conectar. No había nada. Solo ausencia con dientes."</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: Recuperó el último objeto físico asociado a La Estrella — un fragmento de su manto. El fragmento no brilla.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>XII. EL COLGADO</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>El Colgado se rindió ante la información de que algo grande se venía.</p>
+    <p>Era solo cuestión de tiempo para que la cola visitase a todos por igual.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>Sus escritos describen con precisión perturbadora la forma del ciervo, la cola puntiaguda, el cráneo expuesto — décadas antes del primer avistamiento oficial.</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: Dejó una nota a La Estrella: "No te quedes la última. Por favor." La Estrella nunca la leyó.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>XIII. LA MUERTE</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Ciclo de renovación de almas. El flujo de energía residual es normal, sin picos de peligro.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>"No llegó a mí. No hubo transición. No hay eco. Fue como si nunca hubiera existido — excepto que yo recuerdo que existió, y ese recuerdo no tiene a dónde ir."</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: La Muerte no tiene registro de La Estrella. La erradicación no es muerte — es algo para lo que la muerte no tiene nombre.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>XIV. LA TEMPLANZA</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Alquimista reguladora de las pócimas de transmutación. Pureza del nexo al 98.4%.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>El territorio no está contaminado. Está vacío de potencial. Como si la posibilidad de que algo existiera ahí hubiera sido consumida.</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: Preparó las mezclas estabilizadoras que La Estrella usaba. Su último envío nunca fue recogido.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>XV. EL DIABLO</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Vigilancia de los pactos oscuros. Entidades confinadas bajo contratos estables de la Orden.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>"No está en mis registros. Nada que tiene ese poder debería existir sin un contrato. Sin un nombre que yo pueda pronunciar."</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: Intentó establecer un contrato con la Singularidad para proteger a La Estrella. Fracasó — no porque rechazara el contrato, sino porque no había nadie ahí para firmarlo.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>XVI. LA TORRE</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Estructura del faro astral principal. Cimientos reforzados contra ráfagas de viento mágico.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>Desde la erradicación emite la frecuencia correcta pero suena hueco. Los navegantes la siguen, pero ya no se siente como esperanza. Se siente como una imitación de esperanza.</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: Fue diseñada para ser el reemplazo de La Estrella. Ahora que no existe, La Torre es todo lo que queda. Y no es suficiente.</p>
+    </div>
+</div>
+
+<!-- XVII. LA ESTRELLA -->
+<div class="archivo estrella" onclick="toggleLore(this)">
+    <div class="archivo-header">
+        <span class="estado alerta">[⚠]</span>
+        <h2>XVII. LA ESTRELLA</h2>
+        <span class="lore-toggle">▶ VER ARCHIVO</span>
+    </div>
+    <p>La portadora de la esperanza.</p>
+    <p>La guía de quienes caminaban entre ruinas.</p>
+    <p>La última en abandonar los territorios contaminados.</p>
+    <div class="estrella-fragmento">
+        <p class="corrupto">ESTADO: ARCHIVO CORRUPTO — CAUSA: ERRADICACIÓN TOTAL</p>
+        <p class="texto-invertido">ɐʅoɔ ɐʅ oᴉnᵷᴉs ʅƎ</p>
+        <p class="estrella-nota">No fue derrotada. No fue consumida. Fue reducida a nada.</p>
+        <p class="estrella-nota">El cosmos registra su ausencia como un agujero donde antes había luz.</p>
+    </div>
+    <p class="secreto-seleccionable">Ella no cayó... fue arrastrada hacia el estómago del ciervo.</p>
+    <div class="estrella-conexion"><span class="tag-conexion">⟶ VER REGISTRO XXIII</span></div>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// FRAGMENTOS RECUPERADOS — INTEGRIDAD: 23% //</p>
+        <p>La Estrella no nació en la Orden. Existía antes que ella. Nunca reclamó un territorio. Iba donde la necesitaban y se quedaba hasta que ya no había nadie que necesitara ser guiado.</p>
+        <p class="corrupto">██ FRAGMENTO CORRUPTO ██ [SU ÚLTIMA MISIÓN FUE EN LOS TERRITORIOS DEL ████]</p>
+        <p>En sus últimos momentos, no gritó. No huyó. Brilló más fuerte que nunca.</p>
+        <p class="lore-relacion" style="color:#883333;">FIN DEL REGISTRO. NO HAY MÁS FRAGMENTOS. NO HAY MÁS.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>XVIII. LA LUNA</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Monitoreo de las mareas de ilusión. Los arcanistas reportaron pesadillas leves, descartadas por el departamento médico.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>Las pesadillas eran idénticas en todos los casos: un ciervo parado en un claro iluminado por una estrella que se apagaba.</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: La Estrella visitaba los sueños de los arcanos perdidos para guiarlos. Desde la erradicación, esos sueños son solo oscuridad.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>XIX. EL SOL</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Fuente calórica nexo central. Iluminación estable en todas las dependencias.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>"Yo ilumino el día. Ella iluminaba la oscuridad interior. Yo no puedo hacer lo que ella hacía. Nadie puede."</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: La luz del Sol ilumina para que veas dónde estás. La luz de La Estrella iluminaba para que recordaras que valía la pena seguir adelante. No son lo mismo.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>XX. EL JUICIO</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Alerta temprana de despertar ancestral. El heraldo no ha tocado la trompeta. Sin actividad.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>"La trompeta no suena para anunciar lo que ya sucedió."</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: Sin La Estrella, El Juicio, cuando llegue, será en la oscuridad.</p>
+    </div>
+</div>
+
+<div class="archivo" onclick="toggleLore(this)">
+    <div class="archivo-header"><span class="estado">[✔]</span><h2>XXI. EL MUNDO</h2><span class="lore-toggle">▶ VER ARCHIVO</span></div>
+    <p>Bitácora: Registro de la realidad conocida. El mapa cartográfico no presenta alteraciones geográficas.</p>
+    <div class="lore-expandible">
+        <p class="lore-titulo">// REGISTRO COMPLETO //</p>
+        <p>Donde La Estrella existía, el mapa tiene una marca — "la forma de algo que ya no puede ser señalado".</p>
+        <p class="lore-relacion">RELACIÓN CON XVII: El mapa resultante de unir todos los lugares donde estuvo La Estrella forma una figura que ningún cartógrafo ha podido terminar de trazar sin detenerse.</p>
+    </div>
+</div>
+
+<!-- XXII AUSENTE -->
+<div class="archivo archivo-ausente">
+    <div class="archivo-header"><span class="estado ausente">[?]</span><h2>XXII. <span class="texto-ausente">—</span></h2></div>
+    <p class="nota-sistema">// EL SISTEMA NO RECONOCE UN ARCANO XXII //</p>
+    <p class="nota-sistema">// ¿NUNCA EXISTIÓ, O FUE BORRADO? //</p>
+</div>
+
+<!-- XXIII. LA SINGULARIDAD — bloqueado -->
+<div class="archivo singularidad" id="singularidad-card" onclick="intentarAbrirSingularidad()">
+    <div class="sing-header">
+        <span class="estado bloqueado">[██]</span>
+        <span class="sing-numero">XXIII</span>
+        <span id="sing-lock-label" class="sing-lock-label">🔒 ACCESO RESTRINGIDO</span>
+    </div>
+    <h2 class="sing-titulo">████████████</h2>
+    <p class="sing-clasificacion">CLASIFICACIÓN: ANOMALÍA — NI DEMONIO NI DEIDAD</p>
+    <div class="sing-datos">
+        <p>INTENTOS DE RESTAURACIÓN DEL ARCHIVO: <span class="contador-fallo">37</span></p>
+        <p>INTENTOS EXITOSOS: <span class="cero-rojo">0</span></p>
+        <p>ARCANOS ERRADICADOS CONFIRMADOS: <span class="contador-fallo">1</span></p>
+    </div>
+    <div class="sing-descripcion-censurada">
+        <p>PARA EL COSMOS ES ████████████.</p>
+        <p>PARA LA TIERRA ES ████████████.</p>
+        <p>PARA LA ORDEN ES <span class="texto-imposible">INCLASIFICABLE</span>.</p>
+    </div>
+    <p class="sing-pista" id="sing-pista-texto">🔒 COMPLETA EL REGISTRO XVII PARA DESBLOQUEAR</p>
+</div>
+
+</div><!-- cierre main-content -->
+
+<!-- ══ MODAL JUSTICIA ══ -->
+<div id="documento-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <span class="close-button" onclick="cerrarDocumento()">&times; ENCRIPTAR ARCHIVO</span>
+        <div class="document-header" style="margin-top:15px;">
+            <h2>REPORTE PROHIBIDO: ARCANO VIII</h2>
+            <p class="alerta-glitch">ALERTA: INTERFERENCIA BIOMÁGICA DETECTADA</p>
+        </div>
+        <div class="document-body">
+            <p><strong>Registro Oculto:</strong> Las balanzas de la Justicia se derritieron. Ella vio la silueta entre los árboles secos antes de que el nexo colapsara.</p>
+            <div class="puzzle-box">
+                <p class="texto-extraño">¿S E N E C E S I T A &nbsp; J U S T I C I A &nbsp; C U A N D O &nbsp; E L &nbsp; F I N &nbsp; E S &nbsp; I N E V I T A B L E?</p>
+                <p class="pista-acertijo">[CÓDIGO DE ACCESO: Las estrellas muertas no pesan nada]</p>
+            </div>
+            <div class="anomalia-container">
+                <span class="tag-rojo">AVISTAMIENTO DETECTADO</span>
+                <!-- ojo cliqueable para ir a vacio.html -->
+                <img src="cola-ciervo.png" alt="Anomalía" class="glitch-img" id="ojo-link" onclick="irAlVacio()" style="cursor:pointer;" title="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ MODAL SINGULARIDAD ══ -->
+<div id="singularidad-modal" class="modal-overlay modal-singularidad" style="display:none;">
+    <div class="modal-content modal-content-sing">
+        <span class="close-button close-sing" onclick="cerrarSingularidad()">&times; ABANDONAR REGISTRO</span>
+        <div class="sing-modal-header">
+            <p class="sing-modal-num">ARCANO XXIII</p>
+            <h2 class="sing-modal-nombre">LA SINGULARIDAD</h2>
+            <p class="sing-modal-sub">REGISTRO PARCIALMENTE RECONSTRUIDO — CONFIABILIDAD: 12%</p>
+        </div>
+        <div class="sing-modal-cuerpo">
+            <div class="sing-bloque">
+                <p class="sing-etiqueta">NATURALEZA</p>
+                <p>No es un arcano. Es lo que existe cuando el sistema de clasificación falla.</p>
+                <p>Para el cosmos: un agujero negro. Para la tierra: un demonio. Para la Orden: <em>un error que camina.</em></p>
+            </div>
+            <div class="sing-bloque">
+                <p class="sing-etiqueta">APARIENCIA DOCUMENTADA</p>
+                <ul class="sing-lista">
+                    <li>Forma de <strong>ciervo</strong> — registrada por tres testigos independientes</li>
+                    <li>Cola puntiaguda — único rasgo consistente</li>
+                    <li>Cráneo expuesto — ningún tejido facial visible</li>
+                    <li>Sin ojos documentados. Los testigos no pueden explicar por qué sabían que los miraba.</li>
+                </ul>
+            </div>
+            <div class="sing-bloque sing-bloque-alerta">
+                <p class="sing-etiqueta rojo">INCIDENTE CONFIRMADO: ERRADICACIÓN DE ARCANO XVII</p>
+                <p>La Estrella fue <strong>reducida a nada</strong>. La destrucción cósmica en su estado más puro.</p>
+                <p class="sing-nota-tecnica">// EL NEXO ASTRAL REGISTRÓ UNA AUSENCIA DONDE ANTES EXISTÍA UNA PRESENCIA //</p>
+            </div>
+            <div class="sing-bloque">
+                <p class="sing-etiqueta">RAZÓN DE CLASIFICACIÓN COMO ARCANO</p>
+                <p>Ningún arcanista pudo describir qué era. El número no lo contiene. Solo le da un lugar en la lista.</p>
+            </div>
+            <div class="sing-bloque sing-bloque-final">
+                <p class="texto-imposible-grande">XXIII NO ES UN ARCANO.</p>
+                <p class="texto-imposible-grande">ES EL ESPACIO DONDE UN ARCANO DEBERÍA ESTAR.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ MODAL CIERVO OBSERVANDO ══ -->
+<div id="ciervo-modal" class="modal-overlay modal-ciervo" style="display:none;" onclick="cerrarCiervo()">
+    <div class="ciervo-contenido">
+        <img src="ciervo-skull.png" alt="La Singularidad">
+        <p class="ciervo-texto">TE ESTÁ MIRANDO</p>
+    </div>
+</div>
+
+<!-- ══ MINIJUEGO ══ -->
+<div id="minijuego-modal" class="modal-overlay modal-juego" style="display:none;">
+    <div class="juego-container">
+
+        <div id="juego-intro" class="juego-pantalla">
+            <p class="juego-clasificado">// REGISTRO INTERACTIVO RECUPERADO //</p>
+            <img src="estrella-blanca.png" id="juego-estrella-logo" alt="La Estrella">
+            <h2 class="juego-titulo">XVII. LA ESTRELLA</h2>
+            <p class="juego-subtitulo">Últimas horas registradas antes de la erradicación.</p>
+            <p class="juego-instrucciones">Usa <strong>← → ↑ ↓</strong> o <strong>WASD</strong> para moverte.<br>Esquiva los fragmentos y las púas de la Singularidad.<br>Cada fragmento esquivado vale <strong>3 puntos</strong>.<br>Sobrevive hasta acumular <strong>333</strong> puntos.</p>
+            <button class="juego-btn" onclick="iniciarJuego()">▶ INICIAR REGISTRO</button>
+            <button class="juego-btn juego-btn-cerrar" onclick="cerrarMinijuego()">✕ CERRAR</button>
+        </div>
+
+        <div id="juego-activo" class="juego-pantalla" style="display:none;">
+            <div class="juego-hud">
+                <span>PUNTOS: <strong id="juego-puntos">0</strong> / 333</span>
+                <span id="juego-barra-container"><span id="juego-barra"></span></span>
+                <span>AMENAZA: <strong id="juego-nivel">1%</strong></span>
+            </div>
+            <div style="position:relative; width:600px; max-width:96vw; height:420px;">
+                <canvas id="juego-canvas" width="600" height="420" style="position:absolute;top:0;left:0;z-index:1;"></canvas>
+            </div>
+        </div>
+
+        <!-- Pantalla de consumo final -->
+        <div id="juego-fin" class="juego-pantalla juego-fin-pantalla" style="display:none;">
+        </div>
+
+    </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   INTRO
+══════════════════════════════════════════ */
+window.addEventListener('load', () => {
+    const overlay = document.getElementById('intro-overlay');
+    const main    = document.getElementById('main-content');
+    ['intro-linea1','intro-linea2','intro-linea3'].forEach((id, i) =>
+        setTimeout(() => document.getElementById(id).classList.add('visible'), 600 + i*1100));
+    setTimeout(() => {
+        overlay.style.opacity = '0';
+        main.style.opacity    = '1';
+        setTimeout(() => overlay.style.display = 'none', 2000);
+    }, 4800);
+});
+
+/* ══════════════════════════════════════════
+   CONTADORES
+══════════════════════════════════════════ */
+function animarContadores() {
+    document.querySelectorAll('[data-target]').forEach(el => {
+        const target = parseInt(el.dataset.target);
+        let c = 0;
+        const t = setInterval(() => { c = Math.min(c+1, target); el.textContent = c; if(c>=target) clearInterval(t); }, 120);
+    });
+}
+setTimeout(animarContadores, 5200);
+setInterval(() => { document.querySelectorAll('.contador-fallo').forEach(el => el.textContent = 37 + Math.floor(Math.random()*3)); }, 3200);
+
+/* ══════════════════════════════════════════
+   LORE
+══════════════════════════════════════════ */
+function toggleLore(card) {
+    const lore = card.querySelector('.lore-expandible');
+    const tog  = card.querySelector('.lore-toggle');
+    if (!lore) return;
+    const open = lore.classList.toggle('abierto');
+    if (tog) tog.textContent = open ? '▼ CERRAR ARCHIVO' : '▶ VER ARCHIVO';
+}
+
+/* ══════════════════════════════════════════
+   COLA FANTASMA — cliqueable
+══════════════════════════════════════════ */
+let colaVisible = false;
+(function() {
+    const cola = document.getElementById('cola-fantasma');
+    const corners = [
+        { bottom:'-60px', right:'-40px', left:'auto', top:'auto', transform:'rotate(0deg)' },
+        { bottom:'auto',  right:'-40px', left:'auto', top:'-50px', transform:'rotate(180deg) scaleX(-1)' },
+        { bottom:'-60px', right:'auto',  left:'-40px', top:'auto',  transform:'scaleX(-1)' },
+    ];
+    function mostrar() {
+        const c = corners[Math.floor(Math.random()*corners.length)];
+        Object.assign(cola.style, c);
+        cola.style.opacity = '0';
+        cola.style.display = 'block';
+        colaVisible = true;
+        setTimeout(() => cola.style.opacity = '0.8', 50);
+        setTimeout(() => {
+            cola.style.opacity = '0';
+            colaVisible = false;
+        }, 3000);
+        setTimeout(() => { cola.style.display='none'; }, 4000);
+        setTimeout(mostrar, 50000 + Math.random()*70000);
+    }
+    setTimeout(mostrar, 60000 + Math.random()*60000);
+})();
+
+function colaClick() {
+    if (!colaVisible) return;
+    // Ocultar cola
+    const cola = document.getElementById('cola-fantasma');
+    cola.style.opacity = '0';
+    cola.style.display = 'none';
+    colaVisible = false;
+    mostrarCiervoObservando();
+}
+
+/* ══════════════════════════════════════════
+   EASTER EGG — 5 clicks en La Estrella
+══════════════════════════════════════════ */
+let clicksEstrella = 0, timerEstrella = null;
+function registrarClickEstrella() {
+    clicksEstrella++;
+    if (timerEstrella) clearTimeout(timerEstrella);
+    timerEstrella = setTimeout(() => { clicksEstrella = 0; }, 3000);
+    if (clicksEstrella >= 5) {
+        clicksEstrella = 0;
+        clearTimeout(timerEstrella);
+        mostrarCiervoObservando();
+        return;
+    }
+    if (clicksEstrella === 1) abrirMinijuego();
+}
+
+function mostrarCiervoObservando() {
+    cerrarMinijuego();
+    const ag = document.getElementById('audio-glacier');
+    ag.pause(); ag.currentTime = 0;
+    const ai = document.getElementById('audio-inner');
+    ai.currentTime = 0; ai.play();
+    document.getElementById('ciervo-modal').style.display = 'flex';
+}
+function cerrarCiervo() {
+    document.getElementById('ciervo-modal').style.display = 'none';
+    const ai = document.getElementById('audio-inner');
+    ai.pause(); ai.currentTime = 0;
+}
+
+/* ══════════════════════════════════════════
+   VACIO
+══════════════════════════════════════════ */
+function irAlVacio() {
+    window.open('vacio.html', '_blank');
+}
+
+/* ══════════════════════════════════════════
+   MODALES
+══════════════════════════════════════════ */
+function abrirDocumento()    { document.getElementById('documento-modal').style.display    = 'flex'; }
+function cerrarDocumento()   { document.getElementById('documento-modal').style.display    = 'none'; }
+function cerrarSingularidad(){ document.getElementById('singularidad-modal').style.display = 'none'; }
+
+let juegoCompletado = false;
+function intentarAbrirSingularidad() {
+    if (!juegoCompletado) {
+        const lbl = document.getElementById('sing-lock-label');
+        lbl.style.color = '#ff3838';
+        setTimeout(() => lbl.style.color = '', 600);
+        return;
+    }
+    document.getElementById('singularidad-modal').style.display = 'flex';
+}
+
+function abrirMinijuego() {
+    document.getElementById('minijuego-modal').style.display = 'flex';
+    mostrarPantallaJuego('juego-intro');
+}
+function cerrarMinijuego() {
+    document.getElementById('minijuego-modal').style.display = 'none';
+    cancelarJuego();
+    const ag = document.getElementById('audio-glacier');
+    ag.pause(); ag.currentTime = 0;
+}
+
+/* ══════════════════════════════════════════
+   MINIJUEGO
+══════════════════════════════════════════ */
+let juegoActivo = false, animFrameId = null;
+let puntos = 0;
+let jugador = { x: 284, y: 370, w: 32, h: 32, speed: 5 };
+let teclas  = {};
+let circulos = [], puas = [];
+let spawnCirculo = 0, spawnPua = 0;
+let fondoAngulo  = 0;
+
+const estrellaPNG = new Image(); estrellaPNG.src = 'estrella-blanca.png';
+const fondoPNG    = new Image(); fondoPNG.src    = 'fondo-agujero-negro.png';
+const ciervoPNG   = new Image(); ciervoPNG.src   = 'ciervo-skull.png';
+
+function mostrarPantallaJuego(id) {
+    ['juego-intro','juego-activo','juego-fin'].forEach(pid =>
+        document.getElementById(pid).style.display = pid === id ? 'flex' : 'none');
+}
+
+function iniciarJuego() {
+    puntos = 0; circulos = []; puas = [];
+    spawnCirculo = 0; spawnPua = 0; fondoAngulo = 0;
+    jugador = { x: 284, y: 370, w: 32, h: 32, speed: 5 };
+    teclas  = {};
+    juegoActivo = true;
+    mostrarPantallaJuego('juego-activo');
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('keyup',   offKey);
+    const ag = document.getElementById('audio-glacier');
+    ag.currentTime = 0; ag.play();
+    if (animFrameId) cancelAnimationFrame(animFrameId);
+    loopJuego();
+}
+
+function reiniciarJuego() { mostrarPantallaJuego('juego-intro'); }
+
+function cancelarJuego() {
+    juegoActivo = false;
+    if (animFrameId) cancelAnimationFrame(animFrameId);
+    document.removeEventListener('keydown', onKey);
+    document.removeEventListener('keyup',   offKey);
+}
+
+function onKey(e)  { teclas[e.key]=true;  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault(); }
+function offKey(e) { teclas[e.key]=false; }
+
+function nivelAmenaza() { return Math.min(33, 1 + Math.floor(puntos / 10)); }
+
+function intervaloCirculo() { const n=nivelAmenaza(); return Math.max(14, 80 - n*2); }
+function intervaloPua()     { const n=nivelAmenaza(); return Math.max(60, 220 - n*5); }
+
+function loopJuego() {
+    if (!juegoActivo) return;
+    const canvas = document.getElementById('juego-canvas');
+    const ctx    = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    // Mover jugador
+    if ((teclas['ArrowLeft'] ||teclas['a']||teclas['A']) && jugador.x > 0)            jugador.x -= jugador.speed;
+    if ((teclas['ArrowRight']||teclas['d']||teclas['D']) && jugador.x < W-jugador.w)  jugador.x += jugador.speed;
+    if ((teclas['ArrowUp']   ||teclas['w']||teclas['W']) && jugador.y > 0)            jugador.y -= jugador.speed;
+    if ((teclas['ArrowDown'] ||teclas['s']||teclas['S']) && jugador.y < H-jugador.h)  jugador.y += jugador.speed;
+
+    // Spawn círculos
+    spawnCirculo++;
+    if (spawnCirculo >= intervaloCirculo()) {
+        spawnCirculo = 0;
+        const n   = nivelAmenaza();
+        const vel = 1.4 + n*0.07 + Math.random()*1.0;
+        const r   = 9 + Math.random()*10;
+        circulos.push({ x: r + Math.random()*(W-r*2), y: -r*2, r, vel, contado: false });
+    }
+
+    // Spawn púas (laterales)
+    spawnPua++;
+    if (spawnPua >= intervaloPua()) {
+        spawnPua = 0;
+        const n   = nivelAmenaza();
+        const vel = 2.5 + n*0.1 + Math.random()*1.5;
+        const fromLeft = Math.random() < 0.5;
+        const y   = 30 + Math.random()*(H-60);
+        const len = 28 + Math.random()*18;
+        const w   = 7;
+        puas.push({
+            x: fromLeft ? -len-4 : W+4,
+            y, len, w,
+            vx: fromLeft ? vel : -vel,
+            contada: false
+        });
+    }
+
+    // Mover círculos
+    circulos = circulos.filter(f => {
+        f.y += f.vel;
+        if (!f.contada && f.y - f.r > H) {
+            f.contada = true;
+            puntos += 3; // 3 puntos por círculo
+            return false;
+        }
+        return f.y - f.r < H+40;
+    });
+
+    // Mover púas
+    puas = puas.filter(p => {
+        p.x += p.vx;
+        const dentroX = p.vx > 0 ? p.x > W+p.len : p.x+p.len < 0;
+        if (dentroX) return false;
+        return true;
+    });
+
+    // Colisión círculos
+    for (const f of circulos) {
+        const nearX = Math.max(jugador.x, Math.min(f.x, jugador.x+jugador.w));
+        const nearY = Math.max(jugador.y, Math.min(f.y, jugador.y+jugador.h));
+        const dx=f.x-nearX, dy=f.y-nearY;
+        if (dx*dx+dy*dy < f.r*f.r*0.65) { finJuego(false); return; }
+    }
+
+    // Colisión púas (rectángulo)
+    for (const p of puas) {
+        const px = p.vx > 0 ? p.x : p.x;
+        const py = p.y - p.w/2;
+        if (jugador.x < px+p.len && jugador.x+jugador.w > px &&
+            jugador.y < py+p.w   && jugador.y+jugador.h > py) {
+            finJuego(false); return;
+        }
+    }
+
+    // Victoria
+    if (puntos >= 333) { finJuego(true); return; }
+
+    // ── DIBUJAR ──
+    ctx.clearRect(0,0,W,H);
+
+    // Fondo rotando
+    fondoAngulo += 0.003;
+    ctx.save();
+    ctx.translate(W/2, H/2);
+    ctx.rotate(fondoAngulo);
+    if (fondoPNG.complete && fondoPNG.naturalWidth>0) {
+        ctx.drawImage(fondoPNG, -W/2, -H/2, W, H);
+    } else {
+        ctx.fillStyle='#06030a'; ctx.fillRect(-W/2,-H/2,W,H);
+    }
+    ctx.restore();
+
+    // Overlay oscuro
+    ctx.fillStyle='rgba(0,0,0,0.48)'; ctx.fillRect(0,0,W,H);
+
+    // Scanlines
+    ctx.strokeStyle='rgba(255,255,255,0.02)'; ctx.lineWidth=1;
+    for(let y=0;y<H;y+=4){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+    // Círculos negros con borde rojo
+    circulos.forEach(f => {
+        ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+        ctx.fillStyle='#050000'; ctx.fill();
+        ctx.strokeStyle='#cc2222'; ctx.lineWidth=1.5; ctx.stroke();
+    });
+
+    // Púas — rectángulos rojos oscuros con punta
+    puas.forEach(p => {
+        const fromLeft = p.vx > 0;
+        ctx.save();
+        ctx.translate(p.x + (fromLeft ? 0 : p.len), p.y);
+        if (!fromLeft) ctx.scale(-1, 1);
+        // cuerpo
+        ctx.fillStyle = '#1a0000';
+        ctx.fillRect(0, -p.w/2, p.len - 8, p.w);
+        ctx.strokeStyle = '#cc2222'; ctx.lineWidth = 1;
+        ctx.strokeRect(0, -p.w/2, p.len - 8, p.w);
+        // punta triangular
+        ctx.beginPath();
+        ctx.moveTo(p.len-8, -p.w/2 - 3);
+        ctx.lineTo(p.len+2, 0);
+        ctx.lineTo(p.len-8, p.w/2 + 3);
+        ctx.closePath();
+        ctx.fillStyle = '#cc2222'; ctx.fill();
+        ctx.restore();
+    });
+
+    // Jugador
+    if (estrellaPNG.complete && estrellaPNG.naturalWidth>0) {
+        ctx.drawImage(estrellaPNG, jugador.x, jugador.y, jugador.w, jugador.h);
+    } else {
+        ctx.fillStyle='#fffbe0'; ctx.beginPath();
+        ctx.arc(jugador.x+jugador.w/2, jugador.y+jugador.h/2, jugador.w/2, 0, Math.PI*2); ctx.fill();
+    }
+
+    // HUD
+    const pct = Math.min(1, puntos/333);
+    document.getElementById('juego-puntos').textContent = puntos;
+    document.getElementById('juego-nivel').textContent  = nivelAmenaza()+'%';
+    document.getElementById('juego-barra').style.width  = (pct*100)+'%';
+
+    animFrameId = requestAnimationFrame(loopJuego);
+}
+
+/* ══════════════════════════════════════════
+   FIN DEL JUEGO
+══════════════════════════════════════════ */
+function finJuego(victoria) {
+    juegoActivo = false;
+    cancelarJuego();
+    const ag = document.getElementById('audio-glacier');
+    ag.pause(); ag.currentTime = 0;
+
+    if (!victoria) {
+        // Derrota normal
+        mostrarPantallaJuego('juego-fin');
+        const fin = document.getElementById('juego-fin');
+        fin.innerHTML = `
+            <p class="juego-clasificado">// REGISTRO INTERRUMPIDO //</p>
+            <p class="juego-resultado-texto">La Estrella fue alcanzada. Puntos: ${puntos} / 333</p>
+            <button class="juego-btn" onclick="reiniciarJuego()">↺ REINTENTAR</button>
+            <button class="juego-btn juego-btn-cerrar" onclick="cerrarMinijuego()">✕ CERRAR</button>`;
+        return;
+    }
+
+    // VICTORIA — secuencia de consumo
+    juegoCompletado = true;
+    document.getElementById('sing-lock-label').style.display = 'none';
+    document.getElementById('sing-pista-texto').textContent = '⬛ SEÑAL RESIDUAL DETECTADA — ACCEDER CON PRECAUCIÓN';
+
+    // Sonido estático fuerte
+    const as = document.getElementById('audio-static');
+    as.currentTime = 0;
+    as.volume = 1.0;
+    as.play();
+
+    // Mostrar la pantalla de consumo en el canvas
+    mostrarPantallaJuego('juego-activo');
+    iniciarSecuenciaConsumo();
+}
+
+function iniciarSecuenciaConsumo() {
+    const canvas  = document.getElementById('juego-canvas');
+    const ctx     = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    // Posición inicial del ciervo: arriba, pequeño
+    let ciervoPct   = 0;   // 0→1 (progreso de acercamiento)
+    let estrellaOpa = 1;
+    let fase        = 'acercando'; // 'acercando' → 'consumiendo' → 'gameover'
+    let gOverAlpha  = 0;
+    let frameCount  = 0;
+
+    // Posición fija de la estrella (centro inferior)
+    const exCenter = W/2, eyCenter = H - 60;
+
+    function frame() {
+        frameCount++;
+        ctx.clearRect(0,0,W,H);
+        ctx.fillStyle='#000'; ctx.fillRect(0,0,W,H);
+
+        // Fondo con scanlines rojas tenues
+        ctx.strokeStyle='rgba(180,0,0,0.06)'; ctx.lineWidth=1;
+        for(let y=0;y<H;y+=4){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+        if (fase === 'acercando') {
+            ciervoPct += 0.004;
+            if (ciervoPct >= 1) { ciervoPct = 1; fase = 'consumiendo'; }
+
+            // Ciervo: escala de 0.2→1.6, se acerca hacia la estrella
+            const escala = 0.2 + ciervoPct * 1.4;
+            const cW = 160 * escala, cH = 160 * escala;
+            // parte de arriba-centro y baja hacia la estrella
+            const startY = 40, endY = eyCenter - cH/2;
+            const cy = startY + (endY - startY) * ciervoPct;
+            const cx = W/2 - cW/2;
+
+            // Efecto saturado
+            ctx.filter = `saturate(${3 + ciervoPct*3}) contrast(2) brightness(${0.5 + ciervoPct*0.3})`;
+            if (ciervoPNG.complete && ciervoPNG.naturalWidth>0)
+                ctx.drawImage(ciervoPNG, cx, cy, cW, cH);
+            ctx.filter='none';
+
+            // Estrella parpadeando al final
+            const starOpa = ciervoPct > 0.7 ? 1 - (ciervoPct - 0.7)/0.3 : 1;
+            ctx.globalAlpha = starOpa;
+            if (estrellaPNG.complete) ctx.drawImage(estrellaPNG, exCenter-16, eyCenter-16, 32, 32);
+            ctx.globalAlpha = 1;
+
+        } else if (fase === 'consumiendo') {
+            // Ciervo grande cubriendo todo
+            const escala = 1.6 + (frameCount - 250)*0.002;
+            const cW = 160*escala, cH = 160*escala;
+            ctx.filter = 'saturate(6) contrast(3) brightness(0.4)';
+            if (ciervoPNG.complete) ctx.drawImage(ciervoPNG, W/2-cW/2, eyCenter-cH/2, cW, cH);
+            ctx.filter = 'none';
+            // Flash rojo
+            ctx.fillStyle = `rgba(80,0,0,${0.1 + Math.sin(frameCount*0.15)*0.05})`;
+            ctx.fillRect(0,0,W,H);
+
+            if (frameCount > 320) { fase = 'gameover'; frameCount = 0; }
+
+        } else if (fase === 'gameover') {
+            // Pantalla negra con texto apareciendo
+            gOverAlpha = Math.min(1, gOverAlpha + 0.015);
+
+            // Texto "GAME OVER"
+            ctx.globalAlpha = gOverAlpha;
+            ctx.fillStyle   = '#550000';
+            ctx.font        = 'bold 32px Cinzel, serif';
+            ctx.textAlign   = 'center';
+            ctx.fillText('GAME OVER', W/2, H/2 - 24);
+
+            ctx.fillStyle = '#443322';
+            ctx.font      = '14px Cinzel, serif';
+            ctx.fillText('La Estrella fue consumida.', W/2, H/2 + 18);
+            ctx.globalAlpha = 1;
+            ctx.textAlign   = 'left';
+
+            if (gOverAlpha >= 1 && frameCount > 80) {
+                // Mostrar botones
+                mostrarPantallaJuego('juego-fin');
+                const fin = document.getElementById('juego-fin');
+                fin.style.background = '#000';
+                fin.innerHTML = `
+                    <p style="font-family:Cinzel,serif;color:#550000;font-size:1.6rem;letter-spacing:3px;margin:0;">GAME OVER</p>
+                    <p style="font-family:monospace;color:#443322;font-size:0.85rem;margin:0;">La Estrella fue consumida.</p>
+                    <button class="juego-btn" onclick="reiniciarJuego()">↺ REINTENTAR</button>
+                    <button class="juego-btn juego-btn-cerrar" onclick="cerrarMinijuego()">✕ CERRAR</button>`;
+                // Parar estática
+                const as = document.getElementById('audio-static');
+                setTimeout(() => { as.pause(); as.currentTime=0; }, 1500);
+                return;
+            }
+        }
+
+        animFrameId = requestAnimationFrame(frame);
+    }
+    frame();
+}
+</script>
+</body>
+</html>
