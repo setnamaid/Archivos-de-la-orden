@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Vacio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    background:#0b0b0b;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    font-family:'Cinzel',serif;
+    overflow:hidden;
+    position:relative;
+}
+.texto-oculto{
+    color:#0b0b0b; /* mismo color que fondo — invisible */
+    font-size:1.1rem;
+    line-height:2.2;
+    text-align:center;
+    letter-spacing:2px;
+    user-select:text;
+    max-width:600px;
+    padding:40px;
+    position:relative;
+    z-index:2;
+}
+/* Cuadro camuflado — esquina inferior izquierda */
+#cuadro-secreto{
+    position:fixed;
+    bottom:18px;
+    left:18px;
+    width:38px;
+    height:38px;
+    background:#0b0b0b;        /* mismo fondo */
+    border:1px solid #0b0b0b;  /* borde invisible */
+    cursor:pointer;
+    z-index:100;
+    transition:border-color 0.2s;
+}
+#cuadro-secreto:hover{
+    border-color:#111;          /* levísimo hint al hover */
+}
+</style>
+</head>
+<body>
+<audio id="audio-roaring" src="ROARING.mp3" loop autoplay></audio>
+
+<div class="texto-oculto">
+    ¿donde estoy?<br>
+    ¿alguno puede oirme?
+</div>
+
+<!-- Cuadro completamente camuflado -->
+<div id="cuadro-secreto" onclick="irAExpedientes()"></div>
+
+<script>
+document.addEventListener('click', () => {
+    const a = document.getElementById('audio-roaring');
+    if (a.paused) a.play();
+}, { once: true });
+document.getElementById('audio-roaring').volume = 0.85;
+
+function irAExpedientes() {
+    window.location.href = 'expedientes.html';
+}
+</script>
+</body>
+</html>

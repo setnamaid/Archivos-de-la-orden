@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>El Colgado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    background:#0b0b0b;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    font-family:'Cinzel',serif;
+    overflow:hidden;
+}
+svg#horca{
+    width:220px;
+    height:320px;
+    filter:drop-shadow(0 0 6px rgba(100,80,60,0.2));
+    animation:balanceo 4s ease-in-out infinite;
+    transform-origin: 110px 60px;
+}
+@keyframes balanceo{
+    0%,100%{transform:rotate(-4deg);}
+    50%{transform:rotate(4deg);}
+}
+.titulo{
+    margin-top:30px;
+    font-size:0.72rem;
+    color:#2e2416;
+    letter-spacing:4px;
+}
+.nota{
+    margin-top:10px;
+    font-family:monospace;
+    font-size:0.68rem;
+    color:#1e1610;
+    letter-spacing:1px;
+    max-width:300px;
+    text-align:center;
+    line-height:1.8;
+}
+</style>
+</head>
+<body>
+
+<!-- Estructura de horca + figura de palos colgada y balanceándose -->
+<svg id="horca" viewBox="0 0 220 320" xmlns="http://www.w3.org/2000/svg">
+    <!-- Horca: base, poste vertical, viga horizontal, cuerda -->
+    <!-- Base -->
+    <line x1="20" y1="310" x2="180" y2="310" stroke="#5a4a3a" stroke-width="6" stroke-linecap="round"/>
+    <!-- Poste vertical -->
+    <line x1="60" y1="310" x2="60" y2="30" stroke="#5a4a3a" stroke-width="5" stroke-linecap="round"/>
+    <!-- Viga horizontal -->
+    <line x1="60" y1="30" x2="150" y2="30" stroke="#5a4a3a" stroke-width="5" stroke-linecap="round"/>
+    <!-- Soporte diagonal -->
+    <line x1="60" y1="80" x2="110" y2="30" stroke="#5a4a3a" stroke-width="3" stroke-linecap="round"/>
+    <!-- Cuerda -->
+    <line x1="150" y1="30" x2="150" y2="68" stroke="#7a6a5a" stroke-width="2"/>
+
+    <!-- Figura de palos: colgada del cuello en x=150 -->
+    <!-- Cabeza -->
+    <circle cx="150" cy="80" r="12" fill="none" stroke="#8a7a6a" stroke-width="2"/>
+    <!-- Cuerpo -->
+    <line x1="150" y1="92" x2="150" y2="150" stroke="#8a7a6a" stroke-width="2"/>
+    <!-- Brazo izquierdo — caído -->
+    <line x1="150" y1="110" x2="124" y2="135" stroke="#8a7a6a" stroke-width="2"/>
+    <!-- Brazo derecho — caído -->
+    <line x1="150" y1="110" x2="176" y2="135" stroke="#8a7a6a" stroke-width="2"/>
+    <!-- Pierna izquierda — caída -->
+    <line x1="150" y1="150" x2="130" y2="190" stroke="#8a7a6a" stroke-width="2"/>
+    <!-- Pierna derecha — caída -->
+    <line x1="150" y1="150" x2="170" y2="190" stroke="#8a7a6a" stroke-width="2"/>
+
+    <!-- X en los ojos -->
+    <line x1="144" y1="74" x2="148" y2="78" stroke="#553333" stroke-width="1.5"/>
+    <line x1="148" y1="74" x2="144" y2="78" stroke="#553333" stroke-width="1.5"/>
+    <line x1="152" y1="74" x2="156" y2="78" stroke="#553333" stroke-width="1.5"/>
+    <line x1="156" y1="74" x2="152" y2="78" stroke="#553333" stroke-width="1.5"/>
+</svg>
+
+<p class="titulo">XII — EL COLGADO</p>
+<p class="nota">Él lo sabía.<br>Solo esperaba que alguien más lo descubriera a tiempo.</p>
+
+</body>
+</html>

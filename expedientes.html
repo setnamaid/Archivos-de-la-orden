@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Expedientes</title>
+<style>
+/* ══ RESET ══ */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+/* ══ PANTALLA CRT VERDE ══ */
+body{
+    background:#000;
+    color:#00ff41;
+    font-family:'Courier New', Courier, monospace;
+    font-size:0.88rem;
+    line-height:1.8;
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+}
+
+/* Curvatura de bordes (vignette CRT) */
+body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.85) 100%);
+    pointer-events:none;
+    z-index:10;
+}
+
+/* Líneas de escaneo */
+body::after{
+    content:'';
+    position:fixed;
+    inset:0;
+    background:repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.18) 2px,
+        rgba(0,0,0,0.18) 4px
+    );
+    pointer-events:none;
+    z-index:11;
+    animation:scan-move 8s linear infinite;
+}
+@keyframes scan-move{
+    0%{background-position:0 0;}
+    100%{background-position:0 200px;}
+}
+
+/* Estática animada encima */
+#estatica{
+    position:fixed;
+    inset:0;
+    z-index:12;
+    pointer-events:none;
+    opacity:0.06;
+    animation:static-flicker 0.05s steps(1) infinite;
+}
+@keyframes static-flicker{
+    0%  {background-position:0 0;}
+    20% {background-position:30px 10px;}
+    40% {background-position:-20px 5px;}
+    60% {background-position:15px -8px;}
+    80% {background-position:-5px 20px;}
+    100%{background-position:10px -15px;}
+}
+
+/* Parpadeo del fósforo */
+@keyframes fosforo{
+    0%,100%{opacity:1;}
+    92%{opacity:1;}
+    93%{opacity:0.7;}
+    94%{opacity:1;}
+    97%{opacity:0.85;}
+    98%{opacity:1;}
+}
+body{animation:fosforo 6s infinite;}
+
+/* ══ CONTENIDO ══ */
+.pantalla{
+    max-width:820px;
+    margin:0 auto;
+    padding:32px 28px 60px;
+    position:relative;
+    z-index:5;
+}
+
+.titulo-sistema{
+    color:#00ff41;
+    font-size:1rem;
+    letter-spacing:3px;
+    border-bottom:1px solid #003d10;
+    padding-bottom:10px;
+    margin-bottom:24px;
+    text-shadow:0 0 6px #00ff41;
+}
+
+.subtitulo-sistema{
+    font-size:0.75rem;
+    color:#007a20;
+    letter-spacing:2px;
+    margin-bottom:32px;
+}
+
+/* Expediente */
+.expediente{
+    margin:0 0 18px;
+    padding:14px 16px;
+    border:1px solid #002a0a;
+    background:rgba(0,20,5,0.4);
+    position:relative;
+}
+.expediente.destruido{
+    color:#003d10;
+    border-color:#001505;
+    background:rgba(0,8,2,0.3);
+    cursor:default;
+    user-select:none;
+}
+.expediente.destruido .exp-num{color:#002a08;}
+
+.exp-num{
+    color:#00cc33;
+    font-size:0.72rem;
+    letter-spacing:2px;
+    margin-bottom:6px;
+    text-shadow:0 0 4px #00cc33;
+}
+.exp-contenido{
+    font-size:0.84rem;
+    color:#00e636;
+    text-shadow:0 0 3px rgba(0,255,65,0.4);
+    line-height:1.9;
+}
+.exp-contenido.invertido{
+    display:inline;
+    unicode-bidi:bidi-override;
+    direction:rtl;
+    color:#005a15;
+}
+
+/* Líneas destruidas random */
+.destruido-texto{
+    font-family:monospace;
+    color:#001e06;
+    letter-spacing:1px;
+}
+
+/* separador sistema */
+.sep{
+    color:#003010;
+    font-size:0.7rem;
+    letter-spacing:1px;
+    margin:6px 0 18px;
+}
+
+/* cursor parpadeante */
+.cursor{
+    display:inline-block;
+    width:8px;
+    height:14px;
+    background:#00ff41;
+    animation:blink-cur 1s step-end infinite;
+    vertical-align:middle;
+    margin-left:3px;
+}
+@keyframes blink-cur{0%,100%{opacity:1;}50%{opacity:0;}}
+</style>
+</head>
+<body>
+
+<!-- Estática canvas generada por JS -->
+<canvas id="estatica"></canvas>
+
+<div class="pantalla">
+    <p class="titulo-sistema">▓ SISTEMA DE ARCHIVO — ORDEN ASTRAL v0.3.1 ▓</p>
+    <p class="subtitulo-sistema">EXPEDIENTES RECUPERADOS: 3 / 847 &nbsp;|&nbsp; ESTADO: DEGRADADO &nbsp;|&nbsp; ACCESO: RESTRINGIDO<span class="cursor"></span></p>
+
+    <p class="sep">────────────────────────────────────────────────────────</p>
+
+    <!-- EXPEDIENTE 0 — visible -->
+    <div class="expediente">
+        <p class="exp-num">[EXPEDIENTE 0] — ESTADO: RECUPERADO</p>
+        <div class="exp-contenido">
+            La gran registro sobre los arcanos fue tomado en este mismo lugar...<br>
+            era como ver a un niño pequeño<br>
+            El primer aqui, urga fue un bien necesario<br>
+            <span class="invertido">,ɐpnᵷɐᴉʇund ɐʅoɔ ɐʅ oᴉnᵷᴉs ɹopᴉɐɹʇ ɹǝɯᴉɹd ʅƎ</span><br>
+            una estrella recien nacida,<br>
+            ser perseguido por una fuente oscura.<br>
+            siguio al agujero negro.
+        </div>
+    </div>
+
+    <p class="sep">────────────────────────────────────────────────────────</p>
+
+    <!-- EXPEDIENTES 1–332 destruidos (generados) -->
+    <div id="expedientes-destruidos"></div>
+
+    <p class="sep">────────────────────────────────────────────────────────</p>
+
+    <!-- EXPEDIENTE 333 — visible -->
+    <div class="expediente">
+        <p class="exp-num">[EXPEDIENTE 333] — ESTADO: RECUPERADO</p>
+        <div class="exp-contenido">
+            Los arcanistas para prevalecer como la ley natural de un todo<br>
+            hicieron muchos sacrificios,<br>
+            entre ellos fue su propia voluntad<br>
+            ¿es acaso esta ofensa al orden cosmico lo que atrajo a XXIII?
+        </div>
+    </div>
+
+    <p class="sep">────────────────────────────────────────────────────────</p>
+    <p style="color:#002a08;font-size:0.72rem;letter-spacing:1px;">FIN DEL ARCHIVO RECUPERADO &nbsp;|&nbsp; REGISTROS RESTANTES: IRRECUPERABLES</p>
+</div>
+
+<script>
+/* ══ ESTÁTICA EN CANVAS ══ */
+const canvas = document.getElementById('estatica');
+const ctx    = canvas.getContext('2d');
+canvas.style.cssText = 'position:fixed;inset:0;z-index:12;pointer-events:none;opacity:0.055;';
+
+function resizeCanvas() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function drawNoise() {
+    const w = canvas.width, h = canvas.height;
+    const img = ctx.createImageData(w, h);
+    for (let i = 0; i < img.data.length; i += 4) {
+        const v = Math.random() > 0.5 ? 255 : 0;
+        img.data[i]   = 0;
+        img.data[i+1] = v;
+        img.data[i+2] = 0;
+        img.data[i+3] = Math.random() * 80;
+    }
+    ctx.putImageData(img, 0, 0);
+    requestAnimationFrame(drawNoise);
+}
+drawNoise();
+
+/* ══ GENERAR EXPEDIENTES DESTRUIDOS 1-332 ══ */
+const BASURA = '▓▒░█▄▌▐▀◘○◙♦♣♠♥↕↨↑↓→←∟↔▲▼';
+function textoBasura(len) {
+    let s = '';
+    for (let i = 0; i < len; i++) {
+        s += Math.random() > 0.3
+            ? BASURA[Math.floor(Math.random()*BASURA.length)]
+            : String.fromCharCode(33 + Math.floor(Math.random()*90));
+    }
+    return s;
+}
+
+const cont = document.getElementById('expedientes-destruidos');
+// Mostrar solo ~15 destruidos representativos para no saturar el DOM
+const muestraIdx = [];
+for (let i = 1; i <= 332; i++) muestraIdx.push(i);
+// Mostrar todos pero colapsados visualmente
+let html = '';
+for (let i = 1; i <= 332; i++) {
+    const lineas = 1 + Math.floor(Math.random()*2);
+    let texto = '';
+    for (let l = 0; l < lineas; l++) texto += `<span class="destruido-texto">${textoBasura(30 + Math.floor(Math.random()*40))}</span><br>`;
+    html += `
+    <div class="expediente destruido">
+        <p class="exp-num">[EXPEDIENTE ${i}] — ESTADO: ██████████</p>
+        <div class="exp-contenido">${texto}</div>
+    </div>`;
+    // Pequeño separador cada 10
+    if (i % 10 === 0) html += `<p class="sep" style="color:#001005;">· · ·</p>`;
+}
+cont.innerHTML = html;
+</script>
+</body>
+</html>
