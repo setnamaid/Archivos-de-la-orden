@@ -13,7 +13,7 @@
 
 <!-- AUDIOS -->
 <audio id="audio-glacier" src="GLACEIR.mp3" loop></audio>
-<audio id="audio-static"  src="Static_Sound_Effect__Intro_.mp3"></audio>
+<audio id="audio-static"  src="Static_Sound_Effect__Intro.mp3"></audio>
 <audio id="audio-inner"   src="Inner_Channel_Zone.mp3" loop></audio>
 
 <!-- COLA FANTASMA — ahora cliqueable -->
@@ -430,23 +430,41 @@
 /* ══════════════════════════════════════════
    INTRO
 ══════════════════════════════════════════ */
-window.addEventListener('load', () => {
+function arrancarIntro() {
     const overlay = document.getElementById('intro-overlay');
     const main    = document.getElementById('main-content');
+    if (!overlay || !main) return;
     ['intro-linea1','intro-linea2','intro-linea3'].forEach((id, i) =>
-        setTimeout(() => document.getElementById(id).classList.add('visible'), 600 + i*1100));
+        setTimeout(() => { const el=document.getElementById(id); if(el) el.classList.add('visible'); }, 600 + i*1100));
     setTimeout(() => {
         overlay.style.opacity = '0';
         main.style.opacity    = '1';
         setTimeout(() => {
             overlay.style.display = 'none';
-            // Si viene de tributo.html, abrir minijuego
             if (new URLSearchParams(window.location.search).get('juego') === '1') {
                 abrirMinijuego();
             }
         }, 2000);
     }, 4800);
-});
+}
+
+// Fallback de seguridad: si algo falla, mostrar contenido a los 7 segundos
+setTimeout(() => {
+    const overlay = document.getElementById('intro-overlay');
+    const main    = document.getElementById('main-content');
+    if (overlay && overlay.style.display !== 'none') {
+        overlay.style.opacity = '0';
+        overlay.style.display = 'none';
+    }
+    if (main) main.style.opacity = '1';
+}, 7000);
+
+// Usar DOMContentLoaded para no esperar assets pesados (GIF, MP3, etc.)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', arrancarIntro);
+} else {
+    arrancarIntro();
+}
 
 /* ══════════════════════════════════════════
    CONTADORES
@@ -786,12 +804,30 @@ let juegoActivo = false, animFrameId = null;
 let puntos = 0;
 let jugador = { x: 284, y: 370, w: 32, h: 32, speed: 5 };
 let teclas  = {};
-let circulos = [], puas = [], estrellitas = [];
-let spawnCirculo = 0, spawnPua = 0, spawnEstrellita = 0;
+let circulos = [], cometas = [], estrellitas = [], nebulas = [];
+let spawnCirculo = 0, spawnCometa = 0, spawnEstrellita = 0;
 let fondoAngulo  = 0;
+// Generar nebulas pixel al init
+function generarNebulas(W, H) {
+    nebulas = [];
+    const colores = ['#2a0a4a','#1a0a5a','#3a0a3a','#1a0a3a','#2a0a6a','#4a0a2a','#0a0a4a','#3a0a5a'];
+    for (let i=0; i<18; i++) {
+        nebulas.push({
+            x: Math.random()*W, y: Math.random()*H,
+            w: 40+Math.random()*120, h: 20+Math.random()*60,
+            color: colores[Math.floor(Math.random()*colores.length)],
+            opa: 0.12+Math.random()*0.2,
+            pixels: Array.from({length:30+Math.floor(Math.random()*40)}, ()=>({
+                dx: (Math.random()-0.5)*80, dy: (Math.random()-0.5)*40,
+                s: 2+Math.floor(Math.random()*6)
+            }))
+        });
+    }
+}
 
 const estrellaPNG = new Image(); estrellaPNG.src = 'estrella-blanca.png';
-const fondoPNG    = new Image(); fondoPNG.src    = 'fondo-agujero-negro.png';
+// fondoPNG eliminado — fondo reemplazado por nebulas procedurales
+// cometaPNG eliminado — cometa dibujado con canvas
 const ciervoPNG   = new Image(); ciervoPNG.src   = 'ciervo-skull.png';
 
 function mostrarPantallaJuego(id) {
@@ -800,8 +836,9 @@ function mostrarPantallaJuego(id) {
 }
 
 function iniciarJuego() {
-    puntos = 0; circulos = []; puas = []; estrellitas = [];
-    spawnCirculo = 0; spawnPua = 0; fondoAngulo = 0;
+    puntos = 0; circulos = []; cometas = []; estrellitas = [];
+    spawnCirculo = 0; spawnCometa = 0; fondoAngulo = 0;
+    generarNebulas(600, 420);
     jugador = { x: 284, y: 370, w: 32, h: 32, speed: 5 };
     teclas  = {};
     juegoActivo = true;
@@ -809,7 +846,7 @@ function iniciarJuego() {
     document.addEventListener('keydown', onKey);
     document.addEventListener('keyup',   offKey);
     const ag = document.getElementById('audio-glacier');
-    ag.currentTime = 0; ag.play();
+    ag.volume = 0.75; ag.currentTime = 0; ag.play();
     if (animFrameId) cancelAnimationFrame(animFrameId);
     loopJuego();
 }
@@ -848,30 +885,67 @@ function loopJuego() {
     if (spawnCirculo >= intervaloCirculo()) {
         spawnCirculo = 0;
         const n   = nivelAmenaza();
-        const vel = 1.4 + n*0.07 + Math.random()*1.0;
-        const r   = 9 + Math.random()*10;
-        circulos.push({ x: r + Math.random()*(W-r*2), y: -r*2, r, vel, contado: false });
+        // Radio crece con x2 del nivel de amenaza
+        const rBase = 9 + Math.random()*10;
+        const rExtra = (n / 33) * 2 * rBase;   // hasta x2 de crecimiento extra
+        const r   = Math.min(rBase + rExtra, 55); // cap para no cubrir toda la pantalla
+        // Velocidad inversamente proporcional al tamaño: círculos grandes 10% más lentos por radio extra
+        const velBase = 1.4 + n*0.07 + Math.random()*1.0;
+        const velMod  = 1 - ((r - rBase) / rBase) * 0.10;
+        const vel = velBase * Math.max(0.5, velMod);
+        // Disco de acreción: probabilidad base + 10% extra por nivel
+        const tieneDiscoAcrecion = Math.random() < Math.min(0.95, (r/55 * 0.35 + n/33 * 0.5 + 0.10));
+        circulos.push({ x: r + Math.random()*(W-r*2), y: -r*2, r, vel, contado: false,
+                         discoAcrecion: tieneDiscoAcrecion, discoAngulo: 0 });
     }
 
-    // Spawn púas (laterales)
-    spawnPua++;
-    if (spawnPua >= intervaloPua()) {
-        spawnPua = 0;
-        const n   = nivelAmenaza();
-        const vel = 2.5 + n*0.1 + Math.random()*1.5;
+    // Spawn cometas (laterales) — reemplazan las púas
+    spawnCometa++;
+    if (spawnCometa >= intervaloPua()) {
+        spawnCometa = 0;
+        const n      = nivelAmenaza();
+        const vel    = 2.8 + n*0.12 + Math.random()*1.8;
         const fromLeft = Math.random() < 0.5;
-        const y   = 30 + Math.random()*(H-60);
-        const len = 28 + Math.random()*18;
-        const w   = 7;
-        puas.push({
-            x: fromLeft ? -len-4 : W+4,
-            y, len, w,
-            vx: fromLeft ? vel : -vel,
-            contada: false
+        const y      = 25 + Math.random()*(H - 50);
+        // Estela: lista de posiciones previas
+        cometas.push({
+            x: fromLeft ? -80 : W+80,
+            y, vel,
+            fromLeft,
+            w: 64, h: 32,   // tamaño del sprite
+            trail: [],        // estela de posiciones
+            humo: []          // partículas de humo
         });
     }
 
-    // Spawn estrellitas decorativas
+    // Mover cometas y actualizar estela
+    cometas = cometas.filter(c => {
+        // Guardar posición actual en la estela
+        // Guardar el CENTRO del cometa en la estela
+        c.trail.unshift({ x: c.x + c.w/2, y: c.y + c.h/2 });
+        if (c.trail.length > 12) c.trail.pop();
+
+        // Humo cósmico desde el centro
+        c.humo.push({
+            x: c.x + c.w/2,
+            y: c.y + c.h/2 + (Math.random()-0.5)*10,
+            vx: (Math.random()-0.5)*0.8,
+            vy: (Math.random()-0.5)*0.8,
+            life: 1.0,
+            s: 2+Math.floor(Math.random()*4),
+            color: ['#1a0a3a','#2a1a5a','#0a1a4a','#3a0a2a'][Math.floor(Math.random()*4)]
+        });
+        // Actualizar humo
+        c.humo = c.humo.filter(h => {
+            h.x += h.vx; h.y += h.vy; h.life -= 0.045;
+            return h.life > 0;
+        });
+        if (c.humo.length > 40) c.humo.splice(40);
+
+        c.x += c.fromLeft ? c.vel : -c.vel;
+        const fuera = c.fromLeft ? c.x > W+100 : c.x < -100;
+        return !fuera;
+    });
     spawnEstrellita++;
     if (spawnEstrellita >= 18) {
         spawnEstrellita = 0;
@@ -891,40 +965,49 @@ function loopJuego() {
         return e.y < H + 10;
     });
 
-    // Mover círculos
+    // Mover círculos + disco de acreción atrae al jugador
     circulos = circulos.filter(f => {
         f.y += f.vel;
-        if (!f.contada && f.y - f.r > H) {
-            f.contada = true;
-            puntos += 3; // 3 puntos por círculo
+        f.discoAngulo = (f.discoAngulo || 0) + 0.04;
+        // Atracción del disco de acreción
+        if (f.discoAcrecion) {
+            const dx = f.x - (jugador.x + jugador.w/2);
+            const dy = f.y - (jugador.y + jugador.h/2);
+            const dist = Math.sqrt(dx*dx+dy*dy);
+            if (dist < f.r * 8 && dist > 0) {
+                const fuerza = 0.06 * (1 - dist/(f.r*8));
+                jugador.x += (dx/dist) * fuerza * 2.5;
+                jugador.y += (dy/dist) * fuerza * 2.5;
+                // Clamp dentro del canvas
+                jugador.x = Math.max(0, Math.min(600-jugador.w, jugador.x));
+                jugador.y = Math.max(0, Math.min(420-jugador.h, jugador.y));
+            }
+        }
+        if (!f.contado && f.y - f.r > H) {
+            f.contado = true;
+            puntos += 3;
             return false;
         }
         return f.y - f.r < H+40;
     });
 
-    // Mover púas
-    puas = puas.filter(p => {
-        p.x += p.vx;
-        const dentroX = p.vx > 0 ? p.x > W+p.len : p.x+p.len < 0;
-        if (dentroX) return false;
-        return true;
-    });
-
     // Colisión círculos
     for (const f of circulos) {
-        const nearX = Math.max(jugador.x, Math.min(f.x, jugador.x+jugador.w));
-        const nearY = Math.max(jugador.y, Math.min(f.y, jugador.y+jugador.h));
-        const dx=f.x-nearX, dy=f.y-nearY;
-        if (dx*dx+dy*dy < f.r*f.r*0.65) { finJuego(false); return; }
+        const nearX = Math.max(jugador.x, Math.min(f.x, jugador.x + jugador.w));
+        const nearY = Math.max(jugador.y, Math.min(f.y, jugador.y + jugador.h));
+        const dx = f.x - nearX, dy = f.y - nearY;
+        if (dx*dx + dy*dy < f.r * f.r * 0.7) {
+            flashBlanco(() => finJuego(false)); return;
+        }
     }
 
-    // Colisión púas (rectángulo)
-    for (const p of puas) {
-        const px = p.vx > 0 ? p.x : p.x;
-        const py = p.y - p.w/2;
-        if (jugador.x < px+p.len && jugador.x+jugador.w > px &&
-            jugador.y < py+p.w   && jugador.y+jugador.h > py) {
-            finJuego(false); return;
+    // Colisión cometas
+    for (const c of cometas) {
+        const cx = c.x, cy = c.y;
+        const cw = c.w, ch = c.h;
+        if (jugador.x < cx+cw && jugador.x+jugador.w > cx &&
+            jugador.y < cy+ch && jugador.y+jugador.h > cy) {
+            flashBlanco(() => finJuego(false)); return;
         }
     }
 
@@ -934,32 +1017,57 @@ function loopJuego() {
     // ── DIBUJAR ──
     ctx.clearRect(0,0,W,H);
 
-    // Fondo rotando
-    fondoAngulo += 0.003;
-    ctx.save();
-    ctx.translate(W/2, H/2);
-    ctx.rotate(fondoAngulo);
-    if (fondoPNG.complete && fondoPNG.naturalWidth>0) {
-        ctx.drawImage(fondoPNG, -W/2, -H/2, W, H);
-    } else {
-        ctx.fillStyle='#06030a'; ctx.fillRect(-W/2,-H/2,W,H);
+    // FONDO ARCADE: negro espacial
+    ctx.fillStyle='#02000a'; ctx.fillRect(0,0,W,H);
+
+    // Nebulas pixel art moradas — pulsantes
+    nebulas.forEach((n, ni) => {
+        const pulso = 0.6 + Math.sin(fondoAngulo * 3 + ni * 0.8) * 0.4;
+        ctx.globalAlpha = n.opa * pulso;
+        n.pixels.forEach(p => {
+            // Variar tamaño de pixel con el pulso para dar vida
+            const ps = Math.max(1, p.s + (Math.sin(fondoAngulo*5 + p.dx) > 0.8 ? 1 : 0));
+            ctx.fillStyle = n.color;
+            ctx.fillRect(Math.floor(n.x+p.dx), Math.floor(n.y+p.dy), ps, ps);
+        });
+        ctx.globalAlpha = 1;
+    });
+
+    // Partículas moradas flotantes adicionales
+    ctx.globalAlpha = 0.15 + Math.sin(fondoAngulo*4)*0.05;
+    ctx.fillStyle = '#5a0a8a';
+    for(let i=0; i<6; i++){
+        const px = (W*0.1*i + fondoAngulo*15*((i%2===0)?1:-1)) % W;
+        const py = (H*0.15*i + fondoAngulo*8) % H;
+        const ps = 3 + Math.floor(Math.sin(fondoAngulo*3+i)*2);
+        if(ps>0) ctx.fillRect(Math.floor(px), Math.floor(py), ps, ps);
     }
-    ctx.restore();
+    ctx.globalAlpha = 1;
+
+    // Fondo: nebulas moradas animadas (sin imagen externa)
+    fondoAngulo += 0.0008;
 
     // Overlay oscuro
-    ctx.fillStyle='rgba(0,0,0,0.48)'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(0,0,0,0.32)'; ctx.fillRect(0,0,W,H);
 
-    // Scanlines
-    ctx.strokeStyle='rgba(255,255,255,0.02)'; ctx.lineWidth=1;
-    for(let y=0;y<H;y+=4){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    // Scanlines CRT arcade
+    for(let y=0;y<H;y+=2){
+        ctx.fillStyle='rgba(0,0,0,0.18)';
+        ctx.fillRect(0,y,W,1);
+    }
+    // Vignette curva CRT
+    const vg = ctx.createRadialGradient(W/2,H/2,H*0.3,W/2,H/2,H*0.85);
+    vg.addColorStop(0,'rgba(0,0,0,0)');
+    vg.addColorStop(1,'rgba(0,0,0,0.55)');
+    ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
 
-    // Estrellitas decorativas (baja opacidad)
+    // Estrellitas decorativas
     estrellitas.forEach(e => {
         const opa = e.opa * (0.7 + Math.sin(e.pulso) * 0.3);
         ctx.globalAlpha = opa;
         ctx.fillStyle = '#ffffff';
+        ctx.arc && ctx.beginPath();
         ctx.beginPath();
-        // Cruz de 4 puntas pequeña
         ctx.arc(e.x, e.y, e.r * 0.5, 0, Math.PI*2);
         ctx.fill();
         ctx.fillRect(e.x - e.r*1.4, e.y - 0.5, e.r*2.8, 1);
@@ -967,31 +1075,76 @@ function loopJuego() {
         ctx.globalAlpha = 1;
     });
 
-    // Círculos negros con borde rojo
+    // Círculos negros con borde rojo + disco de acreción
     circulos.forEach(f => {
+        if (f.discoAcrecion) {
+            const discoR = f.r * 1.05 + 6;
+            ctx.save();
+            ctx.translate(f.x, f.y);
+            ctx.rotate(f.discoAngulo);
+            const grad = ctx.createRadialGradient(0,0,f.r, 0,0,discoR+8);
+            grad.addColorStop(0,'rgba(180,50,0,0.5)');
+            grad.addColorStop(0.5,'rgba(255,100,0,0.25)');
+            grad.addColorStop(1,'rgba(255,50,0,0)');
+            ctx.beginPath();
+            ctx.ellipse(0,0, discoR+8, discoR*0.4, 0, 0, Math.PI*2);
+            ctx.fillStyle=grad; ctx.fill();
+            for(let i=0;i<8;i++){
+                const ang=(i/8)*Math.PI*2+f.discoAngulo*1.5;
+                const dr=discoR+Math.sin(f.discoAngulo*3+i)*3;
+                ctx.fillStyle=`rgba(255,${80+i*15},0,${0.6-i*0.05})`;
+                ctx.fillRect(Math.cos(ang)*dr-2, Math.sin(ang)*dr*0.4-2, 3, 3);
+            }
+            ctx.restore();
+        }
         ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
         ctx.fillStyle='#050000'; ctx.fill();
         ctx.strokeStyle='#cc2222'; ctx.lineWidth=1.5; ctx.stroke();
     });
 
-    // Púas — rectángulos rojos oscuros con punta
-    puas.forEach(p => {
-        const fromLeft = p.vx > 0;
+    // Cometas con estela pixel art + humo cósmico
+    cometas.forEach(c => {
+        c.humo.forEach(h => {
+            ctx.globalAlpha = h.life * 0.7;
+            ctx.fillStyle = h.color;
+            ctx.fillRect(Math.floor(h.x), Math.floor(h.y), h.s, h.s);
+        });
+        ctx.globalAlpha = 1;
+        if (c.trail.length > 1) {
+            for (let i=1; i<c.trail.length; i++) {
+                const t = c.trail[i];
+                const frac = 1 - i/c.trail.length;
+                const sz = Math.max(2, Math.floor(frac*8));
+                const paleta = ['#ffffff','#aaccff','#6688ee','#334488','#221133'];
+                const ci = Math.min(paleta.length-1, Math.floor((1-frac)*paleta.length));
+                ctx.globalAlpha = frac * 0.7;
+                ctx.fillStyle = paleta[ci];
+                for(let p=0;p<3;p++){
+                    const ox=(Math.random()-0.5)*sz*2;
+                    const oy=(Math.random()-0.5)*4;
+                    // t.x y t.y ya son el centro del cometa
+                    ctx.fillRect(Math.floor(t.x+ox), Math.floor(t.y+oy), sz, sz);
+                }
+            }
+            ctx.globalAlpha=1;
+        }
+        // Núcleo del cometa: óvalo brillante pixel art sin PNG
         ctx.save();
-        ctx.translate(p.x + (fromLeft ? 0 : p.len), p.y);
-        if (!fromLeft) ctx.scale(-1, 1);
-        // cuerpo
-        ctx.fillStyle = '#1a0000';
-        ctx.fillRect(0, -p.w/2, p.len - 8, p.w);
-        ctx.strokeStyle = '#cc2222'; ctx.lineWidth = 1;
-        ctx.strokeRect(0, -p.w/2, p.len - 8, p.w);
-        // punta triangular
+        const cx2 = c.x + c.w/2, cy2 = c.y + c.h/2;
+        // Glow exterior
+        const grd = ctx.createRadialGradient(cx2, cy2, 2, cx2, cy2, 18);
+        grd.addColorStop(0, 'rgba(200,180,255,0.9)');
+        grd.addColorStop(0.4, 'rgba(120,80,200,0.5)');
+        grd.addColorStop(1, 'rgba(40,0,80,0)');
+        ctx.fillStyle = grd;
         ctx.beginPath();
-        ctx.moveTo(p.len-8, -p.w/2 - 3);
-        ctx.lineTo(p.len+2, 0);
-        ctx.lineTo(p.len-8, p.w/2 + 3);
-        ctx.closePath();
-        ctx.fillStyle = '#cc2222'; ctx.fill();
+        ctx.ellipse(cx2, cy2, 18, 10, 0, 0, Math.PI*2);
+        ctx.fill();
+        // Núcleo sólido pixel
+        ctx.fillStyle = '#e0d0ff';
+        ctx.fillRect(Math.floor(cx2-4), Math.floor(cy2-3), 8, 6);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(Math.floor(cx2-2), Math.floor(cy2-1), 4, 3);
         ctx.restore();
     });
 
@@ -1015,6 +1168,25 @@ function loopJuego() {
 /* ══════════════════════════════════════════
    FIN DEL JUEGO
 ══════════════════════════════════════════ */
+function flashBlanco(cb) {
+    juegoActivo = false;
+    cancelarJuego();
+    document.getElementById('audio-glacier').pause();
+    // Overlay blanco sobre el canvas
+    const canvas = document.getElementById('juego-canvas');
+    const ctx    = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    let alpha = 0;
+    function flashFrame() {
+        alpha = Math.min(1, alpha + 0.18);
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.fillRect(0,0,W,H);
+        if (alpha < 1) requestAnimationFrame(flashFrame);
+        else setTimeout(cb, 80);
+    }
+    flashFrame();
+}
+
 function finJuego(victoria) {
     juegoActivo = false;
     cancelarJuego();
@@ -1035,6 +1207,7 @@ function finJuego(victoria) {
 
     // VICTORIA — secuencia de consumo
     juegoCompletado = true;
+    localStorage.setItem('juegoCompletado','1');
     document.getElementById('sing-lock-label').style.display = 'none';
     document.getElementById('sing-pista-texto').textContent = '⬛ SEÑAL RESIDUAL DETECTADA — ACCEDER CON PRECAUCIÓN';
 
@@ -1054,102 +1227,213 @@ function iniciarSecuenciaConsumo() {
     const ctx    = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
 
-    // Ciervo empieza desde arriba (como los círculos) fuera de pantalla
-    let ciervoY   = -200;
-    let ciervoSz  = 80;         // tamaño inicial pequeño
-    let fase      = 'bajando';  // bajando → consumiendo → gameover
-    let gOverAlpha = 0;
-    let frameCount = 0;
-    let distorsion = 0;
+    // Audio: cortar Glacier, estática lenta
+    const ag = document.getElementById('audio-glacier');
+    ag.pause(); ag.currentTime = 0;
+    const as = document.getElementById('audio-static');
+    as.playbackRate = 0.5;
+    as.volume = 0.1;
+    as.currentTime = 0;
+    as.play();
 
-    // Posición estrella (centro-inferior)
-    const exC = W/2, eyC = H - 55;
+    // Estado
+    let ciervoY   = -220;
+    let ciervoSz  = 70;
+    let fase      = 'bajando'; // bajando → atrayendo → dispersando → gameover
+    let frameCount = 0;
+    let gOverAlpha = 0;
+
+    // Estrella fija en centro inferior
+    const exC = W/2, eyC = H - 60;
+
+    // Pedazos de la estrella (para dispersión)
+    let pedazos = [];
+    let estrellaTirada = false;
+
+    // Partículas de acreción del ciervo
+    let partAcrecion = [];
 
     function frame() {
         frameCount++;
         ctx.clearRect(0,0,W,H);
         ctx.fillStyle = '#000'; ctx.fillRect(0,0,W,H);
 
-        // Scanlines rojas
-        ctx.strokeStyle = 'rgba(160,0,0,0.05)'; ctx.lineWidth=1;
-        for(let y=0;y<H;y+=4){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+        // Scanlines oscuras
+        ctx.fillStyle = 'rgba(0,0,0,0.15)';
+        for(let y=0;y<H;y+=3) ctx.fillRect(0,y,W,1);
+
+        const ciervoCX = W/2;
+        const ciervoCY = ciervoY + ciervoSz/2;
+        // Distancia ciervo → estrella (0=lejos, 1=encima)
+        const dist = Math.max(0, eyC - ciervoCY);
+        const distNorm = Math.max(0, 1 - dist / (H * 0.9)); // 0→1
+
+        // Subir volumen estática cuanto más cerca
+        as.volume = Math.min(1.0, 0.1 + distNorm * 0.9);
 
         if (fase === 'bajando') {
-            // Ciervo baja desde fuera de pantalla hacia la estrella
-            // y crece mientras se acerca
-            const targetY  = eyC - ciervoSz/2;
-            ciervoY  = Math.min(ciervoY + 1.4, targetY);
+            // Ciervo baja lentamente
+            const speed = 0.8 + distNorm * 1.2;
+            ciervoY = Math.min(ciervoY + speed, eyC - ciervoSz * 0.85);
+            ciervoSz = Math.min(ciervoSz + 0.3, 220);
+
+            // Partículas de acreción orbitando al ciervo
+            if (frameCount % 3 === 0) {
+                const ang = Math.random() * Math.PI * 2;
+                const rad = ciervoSz * 0.6 + Math.random() * 30;
+                partAcrecion.push({
+                    x: ciervoCX + Math.cos(ang) * rad,
+                    y: ciervoCY + Math.sin(ang) * rad * 0.4,
+                    vx: (exC - ciervoCX) * 0.01 + (Math.random()-0.5)*0.5,
+                    vy: (eyC  - ciervoCY) * 0.01 + (Math.random()-0.5)*0.5,
+                    life: 1.0,
+                    r: 3 + Math.random() * 5,
+                    color: Math.random() > 0.5 ? '#ff4400' : '#ffaa00'
+                });
+            }
+
+            // Mover y dibujar partículas acreción
+            partAcrecion = partAcrecion.filter(p => {
+                p.x += p.vx; p.y += p.vy; p.life -= 0.025;
+                ctx.globalAlpha = p.life * 0.8;
+                ctx.fillStyle = p.color;
+                // Círculo rojo (igual que los del juego)
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+                ctx.strokeStyle = '#cc2200'; ctx.lineWidth=1; ctx.stroke();
+                ctx.globalAlpha = 1;
+                return p.life > 0;
+            });
+
+            // Ciervo
+            dibujarCiervoGris(ctx, ciervoCX - ciervoSz/2, ciervoY, ciervoSz, distNorm);
+
+            // Estrella inmóvil
+            if (estrellaPNG.complete)
+                ctx.drawImage(estrellaPNG, exC-18, eyC-18, 36, 36);
+
+            // Cuando llega: cambiar fase
+            if (ciervoY >= eyC - ciervoSz * 0.85) {
+                fase = 'atrayendo';
+                frameCount = 0;
+                // Generar pedazos
+                for (let i=0; i<14; i++) {
+                    const ang = (i/14)*Math.PI*2 + Math.random()*0.4;
+                    pedazos.push({
+                        x: exC, y: eyC,
+                        vx: Math.cos(ang) * (1.5 + Math.random()*3),
+                        vy: Math.sin(ang) * (1.5 + Math.random()*3),
+                        rot: Math.random()*Math.PI*2,
+                        rotV: (Math.random()-0.5)*0.2,
+                        sz: 6 + Math.random()*14,
+                        opa: 1.0,
+                        // atracción hacia ciervo
+                        ax: 0, ay: 0
+                    });
+                }
+            }
+
+        } else if (fase === 'atrayendo') {
+            // Estrella se fragmenta y los pedazos son atraídos hacia la boca del ciervo
             ciervoSz = Math.min(ciervoSz + 0.5, 260);
-            distorsion = Math.min(distorsion + 0.015, 1);
+            dibujarCiervoGris(ctx, ciervoCX - ciervoSz/2, ciervoY, ciervoSz, 1);
 
-            if (ciervoY >= targetY) { fase = 'consumiendo'; frameCount = 0; }
+            let todosLlegaron = true;
+            pedazos = pedazos.map(p => {
+                // Atracción hacia boca del ciervo (centro)
+                const dx = ciervoCX - p.x;
+                const dy = ciervoCY - p.y;
+                const d  = Math.sqrt(dx*dx+dy*dy) + 1;
+                p.vx += (dx/d) * 0.25;
+                p.vy += (dy/d) * 0.25;
+                p.x  += p.vx;
+                p.y  += p.vy;
+                p.rot += p.rotV;
+                p.opa = Math.max(0, p.opa - 0.008);
+                if (d > 20) todosLlegaron = false;
 
-            // Distorsión de pantalla — franjas horizontales
-            if (distorsion > 0.1 && frameCount % 4 < 2) {
-                const nFranjas = Math.floor(distorsion * 8);
-                for (let i=0; i<nFranjas; i++) {
-                    const fy = Math.random()*H;
-                    const fh = 2+Math.random()*18;
-                    const fx = (Math.random()-0.5) * distorsion * 50;
-                    ctx.save();
-                    ctx.drawImage(canvas, 0, fy, W, fh, fx, fy, W, fh);
-                    ctx.restore();
+                // Dibujar pedazo estrella
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot);
+                ctx.globalAlpha = p.opa;
+                if (estrellaPNG.complete) {
+                    ctx.drawImage(estrellaPNG, -p.sz/2, -p.sz/2, p.sz, p.sz);
+                } else {
+                    ctx.fillStyle = '#aabbcc';
+                    ctx.fillRect(-p.sz/2, -p.sz/2, p.sz, p.sz);
                 }
+                ctx.globalAlpha = 1;
+                ctx.restore();
+                return p;
+            });
+
+            // Flash rojo cuando llegan
+            if (todosLlegaron || frameCount > 180) {
+                fase = 'dispersando';
+                frameCount = 0;
+                // Relanzar pedazos hacia afuera
+                pedazos.forEach(p => {
+                    const ang = Math.random()*Math.PI*2;
+                    p.vx = Math.cos(ang) * (3 + Math.random()*5);
+                    p.vy = Math.sin(ang) * (3 + Math.random()*5);
+                    p.opa = 1.0;
+                });
+                // Flash blanco
+                ctx.fillStyle = 'rgba(255,255,255,0.9)';
+                ctx.fillRect(0,0,W,H);
             }
 
-            dibujarCiervoGris(ctx, W/2 - ciervoSz/2, ciervoY, ciervoSz, distorsion);
+        } else if (fase === 'dispersando') {
+            // Pedazos se esparcen por la pantalla
+            dibujarCiervoGris(ctx, ciervoCX - ciervoSz/2, ciervoY, ciervoSz, 1);
 
-            // Estrella desaparece cuando el ciervo llega
-            const starOpa = distorsion > 0.7 ? Math.max(0, 1-(distorsion-0.7)/0.3) : 1;
-            ctx.globalAlpha = starOpa;
-            if (estrellaPNG.complete) ctx.drawImage(estrellaPNG, exC-16, eyC-16, 32, 32);
-            ctx.globalAlpha = 1;
+            pedazos.forEach(p => {
+                p.x  += p.vx;
+                p.y  += p.vy;
+                p.vx *= 0.97;
+                p.vy *= 0.97;
+                p.rot += p.rotV;
+                p.opa = Math.max(0, p.opa - 0.006);
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot);
+                ctx.globalAlpha = p.opa;
+                if (estrellaPNG.complete)
+                    ctx.drawImage(estrellaPNG, -p.sz/2, -p.sz/2, p.sz, p.sz);
+                ctx.globalAlpha = 1;
+                ctx.restore();
+            });
 
-        } else if (fase === 'consumiendo') {
-            // Ciervo llena la pantalla + distorsión máxima + flashes
-            ciervoSz = Math.min(ciervoSz + 2.5, W * 1.4);
-            distorsion = 1;
-
-            // Distorsión agresiva
-            if (frameCount % 3 < 2) {
-                const nf = 10 + Math.floor(Math.random()*8);
-                for (let i=0;i<nf;i++) {
-                    const fy=Math.random()*H, fh=2+Math.random()*25;
-                    const fx=(Math.random()-0.5)*90;
-                    ctx.save();
-                    ctx.drawImage(canvas, 0, fy, W, fh, fx, fy, W, fh);
-                    ctx.restore();
-                }
-            }
-
-            dibujarCiervoGris(ctx, W/2-ciervoSz/2, H/2-ciervoSz/2, ciervoSz, 1);
-
-            ctx.fillStyle = `rgba(60,0,0,${0.08+Math.sin(frameCount*0.2)*0.06})`;
+            // Overlay rojo pulsante
+            ctx.fillStyle = `rgba(60,0,0,${0.06+Math.sin(frameCount*0.15)*0.04})`;
             ctx.fillRect(0,0,W,H);
 
-            if (frameCount > 160) { fase='gameover'; frameCount=0; }
+            if (frameCount > 140) { fase = 'gameover'; frameCount = 0; }
 
         } else if (fase === 'gameover') {
-            gOverAlpha = Math.min(1, gOverAlpha+0.018);
+            gOverAlpha = Math.min(1, gOverAlpha + 0.016);
             ctx.globalAlpha = gOverAlpha;
-            ctx.fillStyle='#440000'; ctx.font='bold 32px Cinzel,serif';
-            ctx.textAlign='center';
-            ctx.fillText('GAME OVER', W/2, H/2-22);
-            ctx.fillStyle='#332211'; ctx.font='13px Cinzel,serif';
-            ctx.fillText('La Estrella fue consumida.', W/2, H/2+16);
-            ctx.globalAlpha=1; ctx.textAlign='left';
+            ctx.fillStyle = '#440000';
+            ctx.font = 'bold 32px Cinzel, serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('GAME OVER', W/2, H/2 - 22);
+            ctx.fillStyle = '#332211';
+            ctx.font = '13px Cinzel, serif';
+            ctx.fillText('La Estrella fue consumida.', W/2, H/2 + 16);
+            ctx.globalAlpha = 1;
+            ctx.textAlign = 'left';
 
-            if (gOverAlpha>=1 && frameCount>70) {
+            if (gOverAlpha >= 1 && frameCount > 70) {
                 mostrarPantallaJuego('juego-fin');
                 const fin = document.getElementById('juego-fin');
-                fin.style.background='#000';
-                fin.innerHTML=`
+                fin.style.background = '#000';
+                fin.innerHTML = `
                     <p style="font-family:Cinzel,serif;color:#550000;font-size:1.6rem;letter-spacing:3px;margin:0;">GAME OVER</p>
                     <p style="font-family:monospace;color:#443322;font-size:0.85rem;margin:0;">La Estrella fue consumida.</p>
                     <button class="juego-btn" onclick="reiniciarJuego()">↺ REINTENTAR</button>
                     <button class="juego-btn juego-btn-cerrar" onclick="cerrarMinijuego()">✕ CERRAR</button>`;
-                const as=document.getElementById('audio-static');
-                setTimeout(()=>{as.pause();as.currentTime=0;},1500);
+                as.pause(); as.currentTime = 0;
+                as.playbackRate = 1;
                 return;
             }
         }
@@ -1162,10 +1446,8 @@ function iniciarSecuenciaConsumo() {
 // Dibuja ciervo en escala de grises con contraste saturado + aberración
 function dibujarCiervoGris(ctx, x, y, size, intensidad) {
     if (!ciervoPNG.complete || !ciervoPNG.naturalWidth) return;
-    // Capa base: escala de grises + contraste alto
     ctx.filter = `grayscale(1) contrast(${2+intensidad*3}) brightness(${0.55+intensidad*0.2})`;
     ctx.drawImage(ciervoPNG, x, y, size, size);
-    // Capa de aberración cromática roja
     ctx.globalAlpha = 0.15 + intensidad*0.1;
     ctx.filter = 'grayscale(1) sepia(1) saturate(10) hue-rotate(300deg) contrast(4)';
     ctx.drawImage(ciervoPNG, x + 4*intensidad, y, size, size);

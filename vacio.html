@@ -8,18 +8,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{
+html, body {
     background:#0b0b0b;
+    font-family:'Cinzel',serif;
+    /* Permitir scroll pero ocultar scrollbar */
+    overflow-x:hidden;
+    overflow-y:scroll;
+    scrollbar-width:none; /* Firefox */
+}
+body::-webkit-scrollbar { display:none; } /* Chrome */
+
+/* Sección inicial — centrada como antes */
+#seccion-inicio {
+    min-height:100vh;
     display:flex;
+    flex-direction:column;
     justify-content:center;
     align-items:center;
-    min-height:100vh;
-    font-family:'Cinzel',serif;
-    overflow:hidden;
     position:relative;
 }
-.texto-oculto{
-    color:#0b0b0b; /* mismo color que fondo — invisible */
+
+.texto-oculto {
+    color:#0b0b0b;
     font-size:1.1rem;
     line-height:2.2;
     text-align:center;
@@ -30,34 +40,140 @@ body{
     position:relative;
     z-index:2;
 }
-/* Cuadro camuflado — esquina inferior izquierda */
-#cuadro-secreto{
+.texto-oculto::selection    { background:#222; color:#0b0b0b; }
+.texto-oculto::-moz-selection { background:#222; color:#0b0b0b; }
+
+/* Cuadro secreto esquina inferior izquierda */
+#cuadro-secreto {
     position:fixed;
     bottom:18px;
     left:18px;
     width:38px;
     height:38px;
-    background:#0b0b0b;        /* mismo fondo */
-    border:1px solid #0b0b0b;  /* borde invisible */
+    background:#0b0b0b;
+    border:1px solid #0b0b0b;
     cursor:pointer;
     z-index:100;
     transition:border-color 0.2s;
 }
-#cuadro-secreto:hover{
-    border-color:#111;          /* levísimo hint al hover */
+#cuadro-secreto:hover { border-color:#111; }
+
+/* ── SECCIONES OCULTAS DEBAJO ── */
+.seccion-oculta {
+    min-height:80vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:60px 40px;
+}
+
+/* Textos escondidos — visibles solo al seleccionar */
+.texto-escondido {
+    color:#0b0b0b;
+    font-size:0.95rem;
+    line-height:2.8;
+    text-align:center;
+    letter-spacing:2px;
+    user-select:text;
+    max-width:500px;
+    font-family:'Cinzel',serif;
+    transition:color 0.3s;
+}
+/* Al seleccionar se revela */
+.texto-escondido::selection    { background:#1a1a1a; color:#4a3a2a; }
+.texto-escondido::-moz-selection { background:#1a1a1a; color:#4a3a2a; }
+
+/* Último texto (código) — levemente más visible al hover para insinuar que existe algo */
+.texto-codigo {
+    color:#0b0b0b;
+    font-family:monospace;
+    font-size:0.75rem;
+    letter-spacing:3px;
+    text-align:center;
+    user-select:text;
+    padding:20px;
+    border:1px solid #0b0b0b; /* borde invisible */
+    transition: border-color 0.5s;
+}
+.texto-codigo:hover {
+    border-color:#111; /* levísimo hint */
+}
+.texto-codigo::selection { background:#222; color:#332211; }
+.texto-codigo::-moz-selection { background:#222; color:#332211; }
+
+/* Separadores invisibles entre secciones */
+.sep-invisible {
+    height:30vh;
+    background:#0b0b0b;
 }
 </style>
 </head>
 <body>
 <audio id="audio-roaring" src="ROARING.mp3" loop autoplay></audio>
 
-<div class="texto-oculto">
-    ¿donde estoy?<br>
-    ¿alguno puede oirme?
+<!-- SECCIÓN INICIAL -->
+<div id="seccion-inicio">
+    <div class="texto-oculto">
+        ¿donde estoy?<br>
+        ¿alguno puede oirme?
+    </div>
+    <div id="cuadro-secreto" onclick="irAExpedientes()"></div>
 </div>
 
-<!-- Cuadro completamente camuflado -->
-<div id="cuadro-secreto" onclick="irAExpedientes()"></div>
+<!-- ESPACIO VACÍO largo antes del primer texto oculto -->
+<div class="sep-invisible"></div>
+
+<!-- TEXTO 1 -->
+<div class="seccion-oculta">
+    <p class="texto-escondido">
+        Esta oscuro.<br>
+        Demasiado oscuro.
+    </p>
+</div>
+
+<div class="sep-invisible"></div>
+
+<!-- TEXTO 2 -->
+<div class="seccion-oculta">
+    <p class="texto-escondido">
+        Lo observé a los ojos.<br>
+        Pero creo que pestañé.
+    </p>
+</div>
+
+<div class="sep-invisible"></div>
+
+<!-- TEXTO 3 -->
+<div class="seccion-oculta">
+    <p class="texto-escondido">
+        No me puedo quedar aquí.<br>
+        Debo salir.
+    </p>
+</div>
+
+<div class="sep-invisible"></div>
+
+<!-- TEXTO 4 — más desesperado -->
+<div class="seccion-oculta">
+    <p class="texto-escondido" style="font-size:1.05rem; letter-spacing:1px; line-height:3;">
+        Chicos no me dejen aquí encerrado por favor...<br>
+        lo suplico.
+    </p>
+</div>
+
+<!-- Mucho espacio final antes del código -->
+<div class="sep-invisible"></div>
+<div class="sep-invisible"></div>
+
+<!-- CÓDIGO FINAL -->
+<div class="seccion-oculta" style="min-height:40vh;">
+    <div class="texto-codigo">
+        Codigo: archivo:884-conversacion
+    </div>
+</div>
+
+<!-- Padding final para que el código no quede pegado al fondo -->
+<div style="height:50vh; background:#0b0b0b;"></div>
 
 <script>
 document.addEventListener('click', () => {

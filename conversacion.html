@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>884-conversacion</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{
+    height:100%;
+    background:#000;
+    font-family:'Courier New',monospace;
+    overflow:hidden;
+}
+
+#header{
+    position:fixed;
+    top:0;left:0;right:0;
+    padding:12px 24px;
+    border-bottom:1px solid #0f0f0f;
+    z-index:10;
+    background:#000;
+}
+#header p{font-size:0.65rem;color:#1a1a1a;letter-spacing:2px;}
+
+#historial{
+    position:fixed;
+    top:44px;
+    left:0;right:0;
+    bottom:0;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding:20px 24px 10px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    scrollbar-width:none;
+    /* El globo fijo encima cubre el fondo, no necesita bottom exacto */
+    padding-bottom:60vh;
+}
+
+.burbuja-hist{
+    max-width:760px;
+    width:100%;
+    margin:0 auto;
+    background:#050505;
+    border:1px solid #111;
+    padding:18px 22px;
+    font-size:0.88rem;
+    color:#202020;
+    line-height:2;
+    letter-spacing:0.5px;
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity 0.4s, transform 0.4s;
+    flex-shrink:0;
+    word-break:break-word;
+}
+.burbuja-hist.visible{opacity:1;transform:translateY(0);}
+.burbuja-hist .dial-num{
+    font-size:0.6rem;color:#161616;
+    letter-spacing:2px;margin-bottom:6px;
+}
+
+/* GLOBO FIJO ABAJO */
+#globo-wrapper{
+    position:fixed;
+    bottom:0;left:0;right:0;
+    max-height:55vh;
+    min-height:140px;
+    background:#000;
+    border-top:1px solid #0f0f0f;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:12px 24px 16px;
+    z-index:10;
+}
+
+#burbuja-click{
+    max-width:760px;
+    width:100%;
+    background:#080808;
+    border:1px solid #1e1e1e;
+    padding:18px 22px 36px;
+    font-size:0.92rem;
+    color:#3a3a3a;
+    line-height:2;
+    letter-spacing:0.5px;
+    cursor:pointer;
+    position:relative;
+    transition:border-color 0.3s, color 0.2s;
+    max-height:calc(55vh - 28px);
+    overflow-y:auto;
+    overflow-x:hidden;
+    word-break:break-word;
+    scrollbar-width:none;
+}
+#burbuja-click::-webkit-scrollbar{display:none;}
+#burbuja-click:hover{border-color:#2a2a2a;color:#484848;}
+
+#burbuja-click::after{
+    content:'▶ click para continuar';
+    position:absolute;
+    bottom:10px;right:16px;
+    font-size:0.58rem;color:#1a1a1a;
+    letter-spacing:2px;
+    animation:parpadeo 2s infinite;
+}
+#burbuja-click.ultimo::after{
+    content:'— fin del informe —';
+    animation:none;color:#111;
+}
+
+@keyframes parpadeo{0%,100%{opacity:0.8;}50%{opacity:0.15;}}
+
+#dial-label{font-size:0.6rem;color:#161616;letter-spacing:2px;margin-bottom:8px;}
+#cursor-typing{
+    display:inline-block;width:7px;height:14px;
+    background:#252525;margin-left:2px;vertical-align:middle;
+    animation:blink-c 0.8s step-end infinite;
+}
+@keyframes blink-c{0%,100%{opacity:1;}50%{opacity:0;}}
+
+body::after{
+    content:'';position:fixed;inset:0;
+    background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.07) 3px,rgba(0,0,0,0.07) 4px);
+    pointer-events:none;z-index:30;
+}
+
+#pantalla-fin{
+    display:none;position:fixed;inset:0;background:#000;
+    flex-direction:column;justify-content:center;align-items:center;
+    gap:14px;z-index:50;
+}
+#pantalla-fin p{font-size:0.7rem;color:#1a1a1a;letter-spacing:3px;}
+</style>
+</head>
+<body>
+
+<div id="header">
+    <p>ARCHIVO: 884-conversacion &nbsp;|&nbsp; INFORME 3 &nbsp;|&nbsp; INTEGRIDAD: 34%</p>
+</div>
+
+<div id="historial"></div>
+
+<div id="globo-wrapper">
+    <div id="burbuja-click" onclick="avanzarDialogo()">
+        <div id="dial-label">DIALOGO 1 / 7</div>
+        <span id="texto-actual"></span><span id="cursor-typing"></span>
+    </div>
+</div>
+
+<div id="pantalla-fin">
+    <p>FIN DEL INFORME 3</p>
+    <p style="color:#111;margin-top:6px;font-size:0.58rem;">— ARCHIVO CERRADO —</p>
+</div>
+
+<script>
+const dialogos = [
+    `Comprobando estado de la anomalía...`,
+
+    `Expediente 23.\nEl primer día de avistamiento fue el 10 de abril del 2019 a las 3:33am.`,
+
+    `Datos de posible contacto: VERDADERO.\nPosible conexión con los arcanos: DEBATIBLE.\nEstado de la anomalía: POSIBLE PELIGRO LATENTE.\nPeligro a corto plazo: se detectaron rastros de energía nuclear proveniente de fuera de nuestro sistema solar.\nAvistamiento reciente: NEGATIVO — se cree que la razón es la forma en que la velocidad de la luz nos llega.`,
+
+    `Se recomienda empezar con los protocolos,\npor lo menos antes de que uno de los arcanos pueda resultar comprometido.`,
+
+    `Descripción del arcano número XXIII.\nNombre: LA SINGULARIDAD.`,
+
+    `Un ser que sabemos es más que materia oscura.\nSi es un error cósmico o una fuerza natural mayor a nuestro entendimiento es un completo misterio.\nSus arcos de acreción pueden darnos una mayor pista de su forma — a diferencia de los cuerpos celestes, este no presenta una forma circular.\nAlgunos de los encargados lo apodaron "el ciervo de los cuerpos celestes".\nPosee también una forma alargada y puntiaguda al final de su cuerpo que parece una cola.\nLas teorías nos dicen que puede ser la prueba fehaciente del orden natural y de Dios en nuestro mundo,\npero para determinarlo necesitamos mayor información.`,
+
+    `Necesitamos más tiempo para dar con una conclusión más acertada.\nFin del informe 3.`
+];
+
+let dialActual  = 0;
+let escribiendo = false;
+let textoTimeout = null;
+
+const textoEl   = document.getElementById('texto-actual');
+const cursorEl  = document.getElementById('cursor-typing');
+const dialLabel = document.getElementById('dial-label');
+const burbujaEl = document.getElementById('burbuja-click');
+const historial = document.getElementById('historial');
+
+function escribirTexto(texto) {
+    escribiendo = true;
+    textoEl.innerHTML = '';
+    cursorEl.style.display = 'inline-block';
+    let i = 0;
+    function next() {
+        if (i < texto.length) {
+            if (texto[i] === '\n') {
+                textoEl.appendChild(document.createElement('br'));
+            } else {
+                textoEl.appendChild(document.createTextNode(texto[i]));
+            }
+            i++;
+            textoTimeout = setTimeout(next, 18);
+        } else {
+            escribiendo = false;
+            cursorEl.style.display = 'none';
+        }
+    }
+    next();
+}
+
+function saltarAlFinal() {
+    clearTimeout(textoTimeout);
+    escribiendo = false;
+    textoEl.innerHTML = dialogos[dialActual].replace(/\n/g,'<br>');
+    cursorEl.style.display = 'none';
+}
+
+function avanzarDialogo() {
+    if (escribiendo) { saltarAlFinal(); return; }
+    if (dialActual >= dialogos.length - 1) { mostrarFin(); return; }
+
+    // Guardar en historial
+    const hist = document.createElement('div');
+    hist.className = 'burbuja-hist';
+    hist.innerHTML = `<div class="dial-num">DIALOGO ${dialActual + 1} / ${dialogos.length}</div>${dialogos[dialActual].replace(/\n/g,'<br>')}`;
+    historial.appendChild(hist);
+    requestAnimationFrame(() => {
+        hist.classList.add('visible');
+        historial.scrollTop = historial.scrollHeight;
+    });
+
+    dialActual++;
+    dialLabel.textContent = `DIALOGO ${dialActual + 1} / ${dialogos.length}`;
+    if (dialActual === dialogos.length - 1) burbujaEl.classList.add('ultimo');
+
+    textoEl.innerHTML = '';
+    cursorEl.style.display = 'inline-block';
+    escribirTexto(dialogos[dialActual]);
+}
+
+function mostrarFin() {
+    document.getElementById('globo-wrapper').style.display = 'none';
+    document.getElementById('pantalla-fin').style.display = 'flex';
+}
+
+escribirTexto(dialogos[0]);
+</script>
+</body>
+</html>
